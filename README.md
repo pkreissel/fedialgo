@@ -5,14 +5,19 @@ Fedialgo is an typescript module, that can be used to produce an algorithmic fed
 ## Local Install
 Run:
 
+```console
 npm install
 npm link
-
+```
 Then in your local project:
+```console
 npm link fedialgo
+```
 Use // @ts-ignore if you run into Typescript warnings (because your project might also use masto)
-
-npm run build in fedialgo directory after changes and they will automatically be detected
+```console
+npm run build
+```
+in fedialgo directory after changes and they will automatically be detected
 
 ## Usage
 
