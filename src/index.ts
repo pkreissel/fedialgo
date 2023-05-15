@@ -7,7 +7,8 @@ import {
     diversityFeedScorer,
     reblogsFeedScorer,
     FeatureScorer,
-    FeedScorer
+    FeedScorer,
+    topPostFeatureScorer
 } from "./scorer";
 import weightsStore from "./weights/weightsStore";
 import getHomeFeed from "./feeds/homeFeed";
@@ -17,7 +18,7 @@ import Storage from "./Storage";
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
     fetchers = [getHomeFeed, topPostsFeed]
-    featureScorer = [new favsFeatureScorer(), new reblogsFeatureScorer()]
+    featureScorer = [new favsFeatureScorer(), new reblogsFeatureScorer(), new interactsFeatureScorer(), new topPostFeatureScorer()]
     feedScorer = [new reblogsFeedScorer(), new diversityFeedScorer()]
     feed: StatusType[] = [];
     api: mastodon.Client;
@@ -117,6 +118,11 @@ export default class TheAlgorithm {
     getWeightNames(): string[] {
         const scorers = [...this.featureScorer, ...this.feedScorer];
         return [...scorers.map(scorer => scorer.getVerboseName())]
+    }
+
+    getWeightDescriptions(): string[] {
+        const scorers = [...this.featureScorer, ...this.feedScorer];
+        return [...scorers.map(scorer => scorer.getDescription())]
     }
 
     async getWeights(): Promise<weightsType> {

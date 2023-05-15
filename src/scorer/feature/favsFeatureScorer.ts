@@ -8,7 +8,8 @@ export default class favsFeatureScorer extends FeatureScorer {
     constructor() {
         super({
             featureGetter: (api: mastodon.Client) => FeatureStorage.getTopFavs(api),
-            verboseName: "Favs"
+            verboseName: "Favs",
+            description: "Posts that are from your most favorited users"
         })
     }
 

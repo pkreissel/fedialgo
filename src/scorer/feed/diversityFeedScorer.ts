@@ -3,7 +3,7 @@ import { StatusType } from "../../types";
 
 export default class diversityFeedScorer extends FeedScorer {
     constructor() {
-        super("Diversity");
+        super("Diversity", "Downranks posts from users that you have seen a lot of posts from");
     }
 
     feedExtractor(feed: StatusType[]) {

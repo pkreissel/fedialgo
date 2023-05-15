@@ -4,7 +4,7 @@ import { mastodon } from "masto";
 
 export default class reblogsFeedScorer extends FeedScorer {
     constructor() {
-        super("reblogsFeed");
+        super("reblogsFeed", "More Weight to posts that are reblogged a lot");
     }
 
     feedExtractor(feed: StatusType[]) {
