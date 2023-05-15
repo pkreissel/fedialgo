@@ -20,7 +20,7 @@ const Storage_1 = __importDefault(require("./Storage"));
 class TheAlgorithm {
     constructor(api, user, valueCalculator = null) {
         this.fetchers = [homeFeed_1.default, topPostsFeed_1.default];
-        this.featureScorer = [new scorer_1.favsFeatureScorer(), new scorer_1.reblogsFeatureScorer()];
+        this.featureScorer = [new scorer_1.favsFeatureScorer(), new scorer_1.reblogsFeatureScorer(), new scorer_1.interactsFeatureScorer(), new scorer_1.topPostFeatureScorer()];
         this.feedScorer = [new scorer_1.reblogsFeedScorer(), new scorer_1.diversityFeedScorer()];
         this.feed = [];
         this.api = api;
@@ -106,6 +106,10 @@ class TheAlgorithm {
     getWeightNames() {
         const scorers = [...this.featureScorer, ...this.feedScorer];
         return [...scorers.map(scorer => scorer.getVerboseName())];
+    }
+    getWeightDescriptions() {
+        const scorers = [...this.featureScorer, ...this.feedScorer];
+        return [...scorers.map(scorer => scorer.getDescription())];
     }
     getWeights() {
         return __awaiter(this, void 0, void 0, function* () {

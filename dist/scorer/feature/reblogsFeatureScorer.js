@@ -18,7 +18,8 @@ class reblogsFeatureScorer extends FeatureScorer_1.default {
     constructor() {
         super({
             featureGetter: (api) => { return FeatureStore_1.default.getTopReblogs(api); },
-            verboseName: "Reblogs"
+            verboseName: "Reblogs",
+            description: "Posts that are from your most reblogger users"
         });
     }
     score(api, status) {

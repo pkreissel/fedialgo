@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const FeedScorer_1 = __importDefault(require("../FeedScorer"));
 class diversityFeedScorer extends FeedScorer_1.default {
     constructor() {
-        super("Diversity");
+        super("Diversity", "Downranks posts from users that you have seen a lot of posts from");
     }
     feedExtractor(feed) {
         return feed.reduce((obj, status) => {

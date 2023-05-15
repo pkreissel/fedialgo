@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const FeedScorer_1 = __importDefault(require("../FeedScorer"));
 class reblogsFeedScorer extends FeedScorer_1.default {
     constructor() {
-        super("reblogsFeed");
+        super("reblogsFeed", "More Weight to posts that are reblogged a lot");
     }
     feedExtractor(feed) {
         return feed.reduce((obj, status) => {

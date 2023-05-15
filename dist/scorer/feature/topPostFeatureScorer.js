@@ -13,19 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const FeatureScorer_1 = __importDefault(require("../FeatureScorer"));
-const FeatureStore_1 = __importDefault(require("../../features/FeatureStore"));
-class favsFeatureScorer extends FeatureScorer_1.default {
+class topPostFeatureScorer extends FeatureScorer_1.default {
     constructor() {
         super({
-            featureGetter: (api) => FeatureStore_1.default.getTopFavs(api),
-            verboseName: "Favs",
-            description: "Posts that are from your most favorited users"
+            featureGetter: (api) => { return Promise.resolve({}); },
+            verboseName: "TopPosts",
+            description: "Posts that are trending on multiple of your most popular instances"
         });
     }
     score(api, status) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (status.account.acct in this.feature) ? this.feature[status.account.acct] : 0;
+            return status.topPost ? 1 : 0;
         });
     }
 }
-exports.default = favsFeatureScorer;
+exports.default = topPostFeatureScorer;

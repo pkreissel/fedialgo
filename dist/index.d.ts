@@ -1,11 +1,11 @@
 import { mastodon } from "masto";
 import { FeedFetcher, StatusType, weightsType } from "./types";
-import { favsFeatureScorer, reblogsFeatureScorer, diversityFeedScorer, reblogsFeedScorer, FeatureScorer, FeedScorer } from "./scorer";
+import { favsFeatureScorer, interactsFeatureScorer, reblogsFeatureScorer, diversityFeedScorer, reblogsFeedScorer, FeatureScorer, FeedScorer, topPostFeatureScorer } from "./scorer";
 import getHomeFeed from "./feeds/homeFeed";
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
     fetchers: (typeof getHomeFeed)[];
-    featureScorer: (favsFeatureScorer | reblogsFeatureScorer)[];
+    featureScorer: (favsFeatureScorer | interactsFeatureScorer | reblogsFeatureScorer | topPostFeatureScorer)[];
     feedScorer: (diversityFeedScorer | reblogsFeedScorer)[];
     feed: StatusType[];
     api: mastodon.Client;
@@ -15,6 +15,7 @@ export default class TheAlgorithm {
     private _getScoreObj;
     private _getValueFromScores;
     getWeightNames(): string[];
+    getWeightDescriptions(): string[];
     getWeights(): Promise<weightsType>;
     setWeights(weights: weightsType): Promise<StatusType[]>;
     weightAdjust(statusWeights: weightsType): Promise<weightsType | undefined>;
