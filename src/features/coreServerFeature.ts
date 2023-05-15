@@ -12,8 +12,8 @@ export default async function coreServerFeature(api: mastodon.Client, user: mast
         }
     }
 
-    const serverFrequ = results.reduce((accumulator: serverFeatureType, user: mastodon.v1.Account) => {
-        const server = user.acct.split("@")[1];
+    const serverFrequ = results.reduce((accumulator: serverFeatureType, follower: mastodon.v1.Account) => {
+        const server = follower.acct.split("@")[1] || user.acct.split("@")[1];
         if (server in accumulator) {
             accumulator[server] += 1;
         } else {
