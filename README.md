@@ -2,9 +2,13 @@
 
 Fedialgo is an typescript module, that can be used to produce an algorithmic fediverse experience. This will replace the project "fedifeed" and make it possible to implement the idea into all kinds of other projects. It uses React Native Async Storage, so it should also work in React Native Projects, but havent tested it yet. 
 
+##
+Install directly from github:
+```console
+npm install 
+
 ## Local Install
 Run:
-
 ```console
 npm install
 npm link

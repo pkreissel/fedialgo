@@ -51,7 +51,7 @@ export default class TheAlgorithm {
         await Promise.all(feedScorer.map(scorer => scorer.setFeed(this.feed)));
 
         // Get Score Names
-        const scoreNames = featureScorer.map(scorer => scorer.verboseName);
+        const scoreNames = featureScorer.map(scorer => scorer.getVerboseName());
         const feedScoreNames = feedScorer.map(scorer => scorer.getVerboseName());
 
         // Score Feed
@@ -114,8 +114,13 @@ export default class TheAlgorithm {
         return weightedScores;
     }
 
+    getWeightNames(): string[] {
+        const scorers = [...this.featureScorer, ...this.feedScorer];
+        return [...scorers.map(scorer => scorer.getVerboseName())]
+    }
+
     async getWeights(): Promise<weightsType> {
-        const verboseNames = [...this.featureScorer.map(scorer => scorer.verboseName), ...this.feedScorer.map(scorer => scorer.getVerboseName())];
+        const verboseNames = this.getWeightNames();
         const weights = await weightsStore.getWeightsMulti(verboseNames);
         return weights;
     }
@@ -132,5 +137,18 @@ export default class TheAlgorithm {
         }
         this.feed = scoredFeed.sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
         return this.feed;
+    }
+
+    async weightAdjust(statusWeights: weightsType): Promise<weightsType | undefined> {
+        //Adjust Weights based on user interaction
+        if (statusWeights == undefined) return;
+        const mean = Object.values(statusWeights).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(statusWeights).length;
+        const currentWeight: weightsType = await this.getWeights()
+        const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
+        for (let key in currentWeight) {
+            currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (statusWeights[key] / mean) / (currentWeight[key] / currentMean);
+        }
+        await this.setWeights(currentWeight);
+        return currentWeight;
     }
 }

@@ -27,8 +27,5 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
     "masto": "^5.11.3"
-  },
-  "peerDependencies": {
-    "masto": "^5.11.3"
   }
 }

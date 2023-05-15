@@ -4,10 +4,13 @@ import { StatusType } from "../types";
 export default class FeedScorer {
     private _verboseName: string = "BaseScorer";
     private _isReady: boolean = false;
+    private _description: string = "";
     features: any = {};
 
-    constructor(verboseName: string) {
+
+    constructor(verboseName: string, description?: string) {
         this._verboseName = verboseName;
+        this._description = description || "";
     }
 
     async setFeed(feed: StatusType[]) {
@@ -28,5 +31,9 @@ export default class FeedScorer {
 
     getVerboseName() {
         return this._verboseName;
+    }
+
+    getDescription() {
+        return this._description;
     }
 }

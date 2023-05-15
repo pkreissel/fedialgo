@@ -12,10 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class FeatureScorer {
     constructor(params) {
         this._isReady = false;
+        this._description = "";
         this.feature = {};
         this.defaultWeight = 1;
         this.featureGetter = params.featureGetter;
         this._verboseName = params.verboseName;
+        this._description = params.description || "";
     }
     getFeature(api) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,8 +34,11 @@ class FeatureScorer {
             return 0;
         });
     }
-    get verboseName() {
+    getVerboseName() {
         return this._verboseName;
+    }
+    getDescription() {
+        return this._description;
     }
 }
 exports.default = FeatureScorer;

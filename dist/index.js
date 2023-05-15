@@ -47,7 +47,7 @@ class TheAlgorithm {
             yield Promise.all(featureScorer.map(scorer => scorer.getFeature(this.api)));
             yield Promise.all(feedScorer.map(scorer => scorer.setFeed(this.feed)));
             // Get Score Names
-            const scoreNames = featureScorer.map(scorer => scorer.verboseName);
+            const scoreNames = featureScorer.map(scorer => scorer.getVerboseName());
             const feedScoreNames = feedScorer.map(scorer => scorer.getVerboseName());
             // Score Feed
             let scoredFeed = [];
@@ -70,8 +70,6 @@ class TheAlgorithm {
                 .filter((item) => item.inReplyToId === null)
                 .filter((item) => item.content.includes("RT @") === false)
                 .filter((item) => !item.reblogged);
-            //Remove duplicates
-            scoredFeed = [...new Map(scoredFeed.map((item) => [item["uri"], item])).values()];
             // Add Time Penalty
             scoredFeed.map((item) => {
                 var _a;
@@ -80,7 +78,10 @@ class TheAlgorithm {
                 item.value = ((_a = item.value) !== null && _a !== void 0 ? _a : 0) * timediscount;
             });
             // Sort Feed
-            this.feed = scoredFeed.sort((a, b) => { var _a, _b; return ((_a = b.value) !== null && _a !== void 0 ? _a : 0) - ((_b = a.value) !== null && _b !== void 0 ? _b : 0); });
+            scoredFeed = scoredFeed.sort((a, b) => { var _a, _b; return ((_a = b.value) !== null && _a !== void 0 ? _a : 0) - ((_b = a.value) !== null && _b !== void 0 ? _b : 0); });
+            //Remove duplicates
+            scoredFeed = [...new Map(scoredFeed.map((item) => [item["uri"], item])).values()];
+            this.feed = scoredFeed;
             console.log(this.feed);
             return this.feed;
         });
@@ -102,9 +103,13 @@ class TheAlgorithm {
             return weightedScores;
         });
     }
+    getWeightNames() {
+        const scorers = [...this.featureScorer, ...this.feedScorer];
+        return [...scorers.map(scorer => scorer.getVerboseName())];
+    }
     getWeights() {
         return __awaiter(this, void 0, void 0, function* () {
-            const verboseNames = [...this.featureScorer.map(scorer => scorer.verboseName), ...this.feedScorer.map(scorer => scorer.getVerboseName())];
+            const verboseNames = this.getWeightNames();
             const weights = yield weightsStore_1.default.getWeightsMulti(verboseNames);
             return weights;
         });
@@ -122,6 +127,21 @@ class TheAlgorithm {
             }
             this.feed = scoredFeed.sort((a, b) => { var _a, _b; return ((_a = b.value) !== null && _a !== void 0 ? _a : 0) - ((_b = a.value) !== null && _b !== void 0 ? _b : 0); });
             return this.feed;
+        });
+    }
+    weightAdjust(statusWeights) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //Adjust Weights based on user interaction
+            if (statusWeights == undefined)
+                return;
+            const mean = Object.values(statusWeights).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(statusWeights).length;
+            const currentWeight = yield this.getWeights();
+            const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
+            for (let key in currentWeight) {
+                currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (statusWeights[key] / mean) / (currentWeight[key] / currentMean);
+            }
+            yield this.setWeights(currentWeight);
+            return currentWeight;
         });
     }
 }

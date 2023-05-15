@@ -14,6 +14,8 @@ export default class TheAlgorithm {
     getFeed(): Promise<StatusType[]>;
     private _getScoreObj;
     private _getValueFromScores;
+    getWeightNames(): string[];
     getWeights(): Promise<weightsType>;
     setWeights(weights: weightsType): Promise<StatusType[]>;
+    weightAdjust(statusWeights: weightsType): Promise<weightsType | undefined>;
 }
