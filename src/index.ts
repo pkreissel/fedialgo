@@ -80,7 +80,7 @@ export default class TheAlgorithm {
             .filter((item: StatusType) => item != undefined)
             .filter((item: StatusType) => item.inReplyToId === null)
             .filter((item: StatusType) => item.content.includes("RT @") === false)
-            .filter((item: StatusType) => !item.reblogged)
+            .filter((item: StatusType) => !(item?.reblog?.reblogged ?? false))
 
 
         // Add Time Penalty
