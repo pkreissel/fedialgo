@@ -19,6 +19,6 @@ export default class TheAlgorithm {
     getWeightDescriptions(): string[];
     getWeights(): Promise<weightsType>;
     setWeights(weights: weightsType): Promise<StatusType[]>;
-    getDescription(verboseName: string): Promise<string>;
+    getDescription(verboseName: string): string;
     weightAdjust(statusWeights: weightsType): Promise<weightsType | undefined>;
 }

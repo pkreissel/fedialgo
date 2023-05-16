@@ -143,14 +143,12 @@ class TheAlgorithm {
         });
     }
     getDescription(verboseName) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const scorers = [...this.featureScorer, ...this.feedScorer];
-            const scorer = scorers.find(scorer => scorer.getVerboseName() === verboseName);
-            if (scorer) {
-                return scorer.getDescription();
-            }
-            return "";
-        });
+        const scorers = [...this.featureScorer, ...this.feedScorer];
+        const scorer = scorers.find(scorer => scorer.getVerboseName() === verboseName);
+        if (scorer) {
+            return scorer.getDescription();
+        }
+        return "";
     }
     weightAdjust(statusWeights) {
         return __awaiter(this, void 0, void 0, function* () {
