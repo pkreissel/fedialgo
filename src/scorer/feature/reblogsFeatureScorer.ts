@@ -8,7 +8,8 @@ export default class reblogsFeatureScorer extends FeatureScorer {
         super({
             featureGetter: (api: mastodon.Client) => { return FeatureStorage.getTopReblogs(api) },
             verboseName: "Reblogs",
-            description: "Posts that are from your most reblogger users"
+            description: "Posts that are from your most reblogger users",
+            defaultWeight: 3,
         })
     }
 

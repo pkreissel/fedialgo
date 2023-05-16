@@ -10,13 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class FeedScorer {
-    constructor(verboseName, description) {
+    constructor(verboseName, description, defaultWeight) {
         this._verboseName = "BaseScorer";
         this._isReady = false;
         this._description = "";
+        this._defaultWeight = 1;
         this.features = {};
         this._verboseName = verboseName;
         this._description = description || "";
+        this._defaultWeight = defaultWeight || 1;
     }
     setFeed(feed) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -40,6 +42,9 @@ class FeedScorer {
     }
     getDescription() {
         return this._description;
+    }
+    getDefaultWeight() {
+        return this._defaultWeight;
     }
 }
 exports.default = FeedScorer;

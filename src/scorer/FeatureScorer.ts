@@ -5,6 +5,7 @@ interface RankParams {
     featureGetter: (api: mastodon.Client) => Promise<accFeatureType>,
     verboseName: string,
     description?: string,
+    defaultWeight?: number,
 }
 
 
@@ -14,12 +15,13 @@ export default class FeatureScorer {
     private _isReady: boolean = false;
     private _description: string = "";
     feature: accFeatureType = {};
-    defaultWeight: number = 1;
+    private _defaultWeight: number = 1;
 
     constructor(params: RankParams) {
         this.featureGetter = params.featureGetter;
         this._verboseName = params.verboseName;
         this._description = params.description || "";
+        this._defaultWeight = params.defaultWeight || 1;
     }
 
     async getFeature(api: mastodon.Client) {
@@ -41,5 +43,9 @@ export default class FeatureScorer {
 
     getDescription() {
         return this._description;
+    }
+
+    getDefaultWeight() {
+        return this._defaultWeight;
     }
 }

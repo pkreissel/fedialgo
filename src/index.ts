@@ -14,6 +14,7 @@ import weightsStore from "./weights/weightsStore";
 import getHomeFeed from "./feeds/homeFeed";
 import topPostsFeed from "./feeds/topPostsFeed";
 import Storage from "./Storage";
+import { StaticArrayPaginator } from "./Paginator"
 
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
@@ -29,6 +30,7 @@ export default class TheAlgorithm {
         if (valueCalculator) {
             this._getValueFromScores = valueCalculator;
         }
+        this.setDefaultWeights();
     }
 
     async getFeedAdvanced(
@@ -82,10 +84,11 @@ export default class TheAlgorithm {
 
 
         // Add Time Penalty
-        scoredFeed.map((item: StatusType) => {
+        scoredFeed = scoredFeed.map((item: StatusType) => {
             const seconds = Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000);
             const timediscount = Math.pow((1 + 0.7 * 0.2), -Math.pow((seconds / 3600), 2));
             item.value = (item.value ?? 0) * timediscount
+            return item;
         })
 
         // Sort Feed
@@ -120,6 +123,12 @@ export default class TheAlgorithm {
         return [...scorers.map(scorer => scorer.getVerboseName())]
     }
 
+    async setDefaultWeights(): Promise<void> {
+        //Set Default Weights if they don't exist
+        const scorers = [...this.featureScorer, ...this.feedScorer];
+        Promise.all(scorers.map(scorer => weightsStore.defaultFallback(scorer.getVerboseName(), scorer.getDefaultWeight())))
+    }
+
     getWeightDescriptions(): string[] {
         const scorers = [...this.featureScorer, ...this.feedScorer];
         return [...scorers.map(scorer => scorer.getDescription())]
@@ -145,14 +154,23 @@ export default class TheAlgorithm {
         return this.feed;
     }
 
+    async getDescription(verboseName: string): Promise<string> {
+        const scorers = [...this.featureScorer, ...this.feedScorer];
+        const scorer = scorers.find(scorer => scorer.getVerboseName() === verboseName);
+        if (scorer) {
+            return scorer.getDescription();
+        }
+        return "";
+    }
+
     async weightAdjust(statusWeights: weightsType): Promise<weightsType | undefined> {
         //Adjust Weights based on user interaction
         if (statusWeights == undefined) return;
-        const mean = Object.values(statusWeights).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(statusWeights).length;
+        const mean = Object.values(statusWeights).reduce((accumulator, currentValue) => accumulator + Math.abs(currentValue), 0) / Object.values(statusWeights).length;
         const currentWeight: weightsType = await this.getWeights()
         const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
         for (let key in currentWeight) {
-            currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (statusWeights[key] / mean) / (currentWeight[key] / currentMean);
+            currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
         }
         await this.setWeights(currentWeight);
         return currentWeight;

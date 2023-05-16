@@ -8,7 +8,8 @@ export default class interactsFeatureScorer extends FeatureScorer {
         super({
             featureGetter: (api: mastodon.Client) => { return FeatureStorage.getTopInteracts(api) },
             verboseName: "Interacts",
-            description: "Posts that are from users, that often interact with your posts"
+            description: "Posts that are from users, that often interact with your posts",
+            defaultWeight: 2,
         })
     }
 

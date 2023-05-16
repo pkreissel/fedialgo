@@ -5,4 +5,5 @@ export default class weightsStore extends Storage {
     static setWeights(weights: weightsType, verboseName: string): Promise<void>;
     static getWeightsMulti(verboseNames: string[]): Promise<weightsType>;
     static setWeightsMulti(weights: weightsType): Promise<void>;
+    static defaultFallback(verboseName: string, defaultWeight: number): Promise<boolean>;
 }

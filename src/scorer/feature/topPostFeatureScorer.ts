@@ -8,7 +8,8 @@ export default class topPostFeatureScorer extends FeatureScorer {
         super({
             featureGetter: (api: mastodon.Client) => { return Promise.resolve({}) },
             verboseName: "TopPosts",
-            description: "Posts that are trending on multiple of your most popular instances"
+            description: "Posts that are trending on multiple of your most popular instances",
+            defaultWeight: 1,
         })
     }
 

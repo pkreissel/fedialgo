@@ -5,12 +5,15 @@ export default class FeedScorer {
     private _verboseName: string = "BaseScorer";
     private _isReady: boolean = false;
     private _description: string = "";
+    private _defaultWeight: number = 1;
+
     features: any = {};
 
 
-    constructor(verboseName: string, description?: string) {
+    constructor(verboseName: string, description?: string, defaultWeight?: number) {
         this._verboseName = verboseName;
         this._description = description || "";
+        this._defaultWeight = defaultWeight || 1;
     }
 
     async setFeed(feed: StatusType[]) {
@@ -35,5 +38,8 @@ export default class FeedScorer {
 
     getDescription() {
         return this._description;
+    }
+    getDefaultWeight() {
+        return this._defaultWeight;
     }
 }

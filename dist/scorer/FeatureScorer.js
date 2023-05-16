@@ -14,10 +14,11 @@ class FeatureScorer {
         this._isReady = false;
         this._description = "";
         this.feature = {};
-        this.defaultWeight = 1;
+        this._defaultWeight = 1;
         this.featureGetter = params.featureGetter;
         this._verboseName = params.verboseName;
         this._description = params.description || "";
+        this._defaultWeight = params.defaultWeight || 1;
     }
     getFeature(api) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -39,6 +40,9 @@ class FeatureScorer {
     }
     getDescription() {
         return this._description;
+    }
+    getDefaultWeight() {
+        return this._defaultWeight;
     }
 }
 exports.default = FeatureScorer;

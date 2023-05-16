@@ -65,5 +65,16 @@ class weightsStore extends Storage_1.default {
             }
         });
     }
+    static defaultFallback(verboseName, defaultWeight) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // If the weight is not set, set it to the default weight
+            const weight = yield this.get(Storage_1.Key.WEIGHTS, true, verboseName);
+            if (weight == null) {
+                yield this.setWeights({ [verboseName]: defaultWeight }, verboseName);
+                return true;
+            }
+            return false;
+        });
+    }
 }
 exports.default = weightsStore;

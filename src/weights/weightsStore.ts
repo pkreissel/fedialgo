@@ -28,4 +28,15 @@ export default class weightsStore extends Storage {
             await this.setWeights({ [verboseName]: weights[verboseName] }, verboseName);
         }
     }
+
+    static async defaultFallback(verboseName: string, defaultWeight: number): Promise<boolean> {
+        // If the weight is not set, set it to the default weight
+        const weight = await this.get(Key.WEIGHTS, true, verboseName) as weightsType;
+        if (weight == null) {
+            await this.setWeights({ [verboseName]: defaultWeight }, verboseName);
+            return true;
+        }
+        return false;
+    }
+
 }

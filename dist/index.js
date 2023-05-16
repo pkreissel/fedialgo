@@ -29,6 +29,7 @@ class TheAlgorithm {
         if (valueCalculator) {
             this._getValueFromScores = valueCalculator;
         }
+        this.setDefaultWeights();
     }
     getFeedAdvanced(fetchers, featureScorer, feedScorer) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -71,11 +72,12 @@ class TheAlgorithm {
                 .filter((item) => item.content.includes("RT @") === false)
                 .filter((item) => !item.reblogged);
             // Add Time Penalty
-            scoredFeed.map((item) => {
+            scoredFeed = scoredFeed.map((item) => {
                 var _a;
                 const seconds = Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000);
                 const timediscount = Math.pow((1 + 0.7 * 0.2), -Math.pow((seconds / 3600), 2));
                 item.value = ((_a = item.value) !== null && _a !== void 0 ? _a : 0) * timediscount;
+                return item;
             });
             // Sort Feed
             scoredFeed = scoredFeed.sort((a, b) => { var _a, _b; return ((_a = b.value) !== null && _a !== void 0 ? _a : 0) - ((_b = a.value) !== null && _b !== void 0 ? _b : 0); });
@@ -107,6 +109,13 @@ class TheAlgorithm {
         const scorers = [...this.featureScorer, ...this.feedScorer];
         return [...scorers.map(scorer => scorer.getVerboseName())];
     }
+    setDefaultWeights() {
+        return __awaiter(this, void 0, void 0, function* () {
+            //Set Default Weights if they don't exist
+            const scorers = [...this.featureScorer, ...this.feedScorer];
+            Promise.all(scorers.map(scorer => weightsStore_1.default.defaultFallback(scorer.getVerboseName(), scorer.getDefaultWeight())));
+        });
+    }
     getWeightDescriptions() {
         const scorers = [...this.featureScorer, ...this.feedScorer];
         return [...scorers.map(scorer => scorer.getDescription())];
@@ -133,16 +142,26 @@ class TheAlgorithm {
             return this.feed;
         });
     }
+    getDescription(verboseName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const scorers = [...this.featureScorer, ...this.feedScorer];
+            const scorer = scorers.find(scorer => scorer.getVerboseName() === verboseName);
+            if (scorer) {
+                return scorer.getDescription();
+            }
+            return "";
+        });
+    }
     weightAdjust(statusWeights) {
         return __awaiter(this, void 0, void 0, function* () {
             //Adjust Weights based on user interaction
             if (statusWeights == undefined)
                 return;
-            const mean = Object.values(statusWeights).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(statusWeights).length;
+            const mean = Object.values(statusWeights).reduce((accumulator, currentValue) => accumulator + Math.abs(currentValue), 0) / Object.values(statusWeights).length;
             const currentWeight = yield this.getWeights();
             const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
             for (let key in currentWeight) {
-                currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (statusWeights[key] / mean) / (currentWeight[key] / currentMean);
+                currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
             }
             yield this.setWeights(currentWeight);
             return currentWeight;
