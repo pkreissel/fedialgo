@@ -154,7 +154,7 @@ export default class TheAlgorithm {
         return this.feed;
     }
 
-    async getDescription(verboseName: string): Promise<string> {
+    getDescription(verboseName: string): string {
         const scorers = [...this.featureScorer, ...this.feedScorer];
         const scorer = scorers.find(scorer => scorer.getVerboseName() === verboseName);
         if (scorer) {
