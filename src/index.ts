@@ -27,6 +27,7 @@ export default class TheAlgorithm {
         this.api = api;
         this.user = user;
         Storage.setIdentity(user);
+        Storage.logOpening();
         if (valueCalculator) {
             this._getValueFromScores = valueCalculator;
         }
@@ -170,7 +171,9 @@ export default class TheAlgorithm {
         const currentWeight: weightsType = await this.getWeights()
         const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
         for (let key in currentWeight) {
-            currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
+            let reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
+            currentWeight[key] = currentWeight[key] + 0.02 * currentWeight[key] * reweight;
+            console.log(reweight);
         }
         await this.setWeights(currentWeight);
         return currentWeight;
