@@ -46,7 +46,7 @@ function coreServerFeature(api, user) {
             finally { if (e_1) throw e_1.error; }
         }
         const serverFrequ = results.reduce((accumulator, follower) => {
-            const server = follower.acct.split("@")[1] || user.acct.split("@")[1];
+            const server = follower.url.split("@")[0].split("https://")[1];
             if (server in accumulator) {
                 accumulator[server] += 1;
             }
