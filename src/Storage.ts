@@ -9,9 +9,10 @@ export enum Key {
     CORE_SERVER = 'coreServer',
     USER = 'algouser',
     WEIGHTS = 'weights',
+    OPENINGS = "openings",
 }
 
-type StorageValue = serverFeatureType | accFeatureType | mastodon.v1.Account | weightsType
+type StorageValue = serverFeatureType | accFeatureType | mastodon.v1.Account | weightsType | string
 
 
 export default class Storage {
@@ -44,6 +45,22 @@ export default class Storage {
     protected static async prefix(key: string) {
         const user = await this.getIdentity();
         return `${user.id}_${key}`;
+    }
+
+    static async logOpening() {
+        console.log("Logging Opening")
+        const openings = parseInt(await this.get(Key.OPENINGS, true) as string);
+
+        if (openings == null || isNaN(openings)) {
+            await this.set(Key.OPENINGS, "1", true);
+        } else {
+            await this.set(Key.OPENINGS, (openings + 1).toString(), true);
+        }
+    }
+
+    static async getOpenings() {
+        const openings = parseInt(await this.get(Key.OPENINGS, true) as string);
+        return openings;
     }
 
     static async getIdentity(): Promise<mastodon.v1.Account> {

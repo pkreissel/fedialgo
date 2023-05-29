@@ -26,6 +26,7 @@ class TheAlgorithm {
         this.api = api;
         this.user = user;
         Storage_1.default.setIdentity(user);
+        Storage_1.default.logOpening();
         if (valueCalculator) {
             this._getValueFromScores = valueCalculator;
         }
@@ -70,7 +71,7 @@ class TheAlgorithm {
                 .filter((item) => item != undefined)
                 .filter((item) => item.inReplyToId === null)
                 .filter((item) => item.content.includes("RT @") === false)
-                .filter((item) => !item.reblogged);
+                .filter((item) => { var _a, _b; return !((_b = (_a = item === null || item === void 0 ? void 0 : item.reblog) === null || _a === void 0 ? void 0 : _a.reblogged) !== null && _b !== void 0 ? _b : false); });
             // Add Time Penalty
             scoredFeed = scoredFeed.map((item) => {
                 var _a;
@@ -159,7 +160,9 @@ class TheAlgorithm {
             const currentWeight = yield this.getWeights();
             const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
             for (let key in currentWeight) {
-                currentWeight[key] = currentWeight[key] + 0.1 * currentWeight[key] * (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
+                let reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
+                currentWeight[key] = currentWeight[key] + 0.02 * currentWeight[key] * reweight;
+                console.log(reweight);
             }
             yield this.setWeights(currentWeight);
             return currentWeight;

@@ -31,7 +31,7 @@ class diversityFeedScorer extends FeedScorer_1.default {
             _super.score.call(this, status);
             const frequ = this.features[status.account.acct];
             this.features[status.account.acct] = frequ + 1;
-            return frequ;
+            return frequ + 1;
         });
     }
 }

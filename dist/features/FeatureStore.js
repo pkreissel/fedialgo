@@ -45,7 +45,7 @@ class FeatureStorage extends Storage_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const topFavs = yield this.get(Storage_1.Key.TOP_FAVS);
             console.log(topFavs);
-            if (topFavs != null) {
+            if (topFavs != null && (yield this.getOpenings()) < 10) {
                 return topFavs;
             }
             else {
@@ -59,7 +59,7 @@ class FeatureStorage extends Storage_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const topReblogs = yield this.get(Storage_1.Key.TOP_REBLOGS);
             console.log(topReblogs);
-            if (topReblogs != null) {
+            if (topReblogs != null && (yield this.getOpenings()) < 10) {
                 return topReblogs;
             }
             else {
@@ -73,7 +73,7 @@ class FeatureStorage extends Storage_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const topInteracts = yield this.get(Storage_1.Key.TOP_INTERACTS);
             console.log(topInteracts);
-            if (topInteracts != null) {
+            if (topInteracts != null && (yield this.getOpenings()) < 10) {
                 return topInteracts;
             }
             else {
@@ -87,7 +87,7 @@ class FeatureStorage extends Storage_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const coreServer = yield this.get(Storage_1.Key.CORE_SERVER);
             console.log(coreServer);
-            if (coreServer != null) {
+            if (coreServer != null && (yield this.getOpenings()) < 10) {
                 return coreServer;
             }
             else {

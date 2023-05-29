@@ -13,7 +13,7 @@ export default async function coreServerFeature(api: mastodon.Client, user: mast
     }
 
     const serverFrequ = results.reduce((accumulator: serverFeatureType, follower: mastodon.v1.Account) => {
-        const server = follower.acct.split("@")[1] || user.acct.split("@")[1];
+        const server = follower.url.split("@")[0].split("https://")[1];
         if (server in accumulator) {
             accumulator[server] += 1;
         } else {

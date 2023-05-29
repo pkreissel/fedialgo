@@ -26,7 +26,13 @@ function getTopPostFeed(api) {
         results = yield Promise.all(servers.map((server) => __awaiter(this, void 0, void 0, function* () {
             if (server === "undefined" || typeof server == "undefined" || server === "")
                 return [];
-            const res = yield fetch("https://" + server + "/api/v1/trends/statuses");
+            let res;
+            try {
+                res = yield fetch("https://" + server + "/api/v1/trends/statuses");
+            }
+            catch (e) {
+                return [];
+            }
             if (!res.ok) {
                 return [];
             }

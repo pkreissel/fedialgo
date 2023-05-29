@@ -6,15 +6,18 @@ export declare enum Key {
     TOP_INTERACTS = "interacts",
     CORE_SERVER = "coreServer",
     USER = "algouser",
-    WEIGHTS = "weights"
+    WEIGHTS = "weights",
+    OPENINGS = "openings"
 }
-type StorageValue = serverFeatureType | accFeatureType | mastodon.v1.Account | weightsType;
+type StorageValue = serverFeatureType | accFeatureType | mastodon.v1.Account | weightsType | string;
 export default class Storage {
     protected static get(key: Key, groupedByUser?: boolean, suffix?: string): Promise<StorageValue>;
     protected static set(key: Key, value: StorageValue, groupedByUser?: boolean, suffix?: string): Promise<void>;
     static suffix(key: Key, suffix: any): string;
     protected static remove(key: Key, groupedByUser?: boolean, suffix?: string): Promise<void>;
     protected static prefix(key: string): Promise<string>;
+    static logOpening(): Promise<void>;
+    static getOpenings(): Promise<number>;
     static getIdentity(): Promise<mastodon.v1.Account>;
     static setIdentity(user: mastodon.v1.Account): Promise<void>;
 }

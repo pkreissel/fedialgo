@@ -22,6 +22,7 @@ var Key;
     Key["CORE_SERVER"] = "coreServer";
     Key["USER"] = "algouser";
     Key["WEIGHTS"] = "weights";
+    Key["OPENINGS"] = "openings";
 })(Key = exports.Key || (exports.Key = {}));
 class Storage {
     static get(key, groupedByUser = true, suffix = "") {
@@ -57,6 +58,24 @@ class Storage {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.getIdentity();
             return `${user.id}_${key}`;
+        });
+    }
+    static logOpening() {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Logging Opening");
+            const openings = parseInt(yield this.get(Key.OPENINGS, true));
+            if (openings == null || isNaN(openings)) {
+                yield this.set(Key.OPENINGS, "1", true);
+            }
+            else {
+                yield this.set(Key.OPENINGS, (openings + 1).toString(), true);
+            }
+        });
+    }
+    static getOpenings() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const openings = parseInt(yield this.get(Key.OPENINGS, true));
+            return openings;
         });
     }
     static getIdentity() {
