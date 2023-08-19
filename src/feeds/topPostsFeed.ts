@@ -12,9 +12,10 @@ export default async function getTopPostFeed(api: mastodon.Client): Promise<mast
 
     results = await Promise.all(servers.map(async (server: string): Promise<mastodon.v1.Status[]> => {
         if (server === "undefined" || typeof server == "undefined" || server === "") return [];
-        let res;
+        let res, json;
         try {
             res = await fetch("https://" + server + "/api/v1/trends/statuses")
+            json = await res.json();
         }
         catch (e) {
             return [];
@@ -22,7 +23,7 @@ export default async function getTopPostFeed(api: mastodon.Client): Promise<mast
         if (!res.ok) {
             return [];
         }
-        const data: any[] = serializer.deserialize('application/json', await res.text());
+        const data: any[] = serializer.deserialize('application/json', json);
         if (data === undefined) {
             return [];
         }
