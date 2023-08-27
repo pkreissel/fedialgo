@@ -1,9 +1,9 @@
-import { login, mastodon } from "masto";
+import { mastodon } from "masto";
 
-export default async function getReblogsFeature(api: mastodon.Client) {
+export default async function getReblogsFeature(api: mastodon.rest.Client) {
     let results: any[] = [];
     let pages = 3;
-    for await (const page of api.v1.timelines.listHome({ limit: 80 })) {
+    for await (const page of api.v1.timelines.home.list({ limit: 80 })) {
         results = results.concat(page)
         pages--;
         if (pages === 0 || results.length < 80) {

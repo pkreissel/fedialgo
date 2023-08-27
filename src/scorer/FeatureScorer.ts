@@ -2,7 +2,7 @@ import { mastodon } from "masto"
 import { StatusType, accFeatureType } from "../types";
 
 interface RankParams {
-    featureGetter: (api: mastodon.Client) => Promise<accFeatureType>,
+    featureGetter: (api: mastodon.rest.Client) => Promise<accFeatureType>,
     verboseName: string,
     description?: string,
     defaultWeight?: number,
@@ -10,7 +10,7 @@ interface RankParams {
 
 
 export default class FeatureScorer {
-    featureGetter: (api: mastodon.Client) => Promise<accFeatureType>;
+    featureGetter: (api: mastodon.rest.Client) => Promise<accFeatureType>;
     private _verboseName: string;
     private _isReady: boolean = false;
     private _description: string = "";
@@ -24,12 +24,12 @@ export default class FeatureScorer {
         this._defaultWeight = params.defaultWeight || 1;
     }
 
-    async getFeature(api: mastodon.Client) {
+    async getFeature(api: mastodon.rest.Client) {
         this._isReady = true;
         this.feature = await this.featureGetter(api);
     }
 
-    async score(api: mastodon.Client, status: StatusType): Promise<number> {
+    async score(api: mastodon.rest.Client, status: StatusType): Promise<number> {
         if (!this._isReady) {
             await this.getFeature(api);
             this._isReady = true;

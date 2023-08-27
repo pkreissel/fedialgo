@@ -1,7 +1,7 @@
 import { mastodon } from "masto";
 import { accFeatureType } from "../types";
 
-export default async function interactFeature(api: mastodon.Client): Promise<accFeatureType> {
+export default async function interactFeature(api: mastodon.rest.Client): Promise<accFeatureType> {
     let results: any[] = [];
     let pages = 3;
     for await (const page of api.v1.notifications.list({ limit: 80 })) {

@@ -1,6 +1,5 @@
 import FeedScorer from "../FeedScorer";
 import { StatusType } from "../../types";
-import { mastodon } from "masto";
 
 export default class reblogsFeedScorer extends FeedScorer {
     constructor() {

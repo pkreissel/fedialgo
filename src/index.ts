@@ -14,7 +14,7 @@ import weightsStore from "./weights/weightsStore";
 import getHomeFeed from "./feeds/homeFeed";
 import topPostsFeed from "./feeds/topPostsFeed";
 import Storage from "./Storage";
-import { StaticArrayPaginator } from "./Paginator"
+import Paginator from "./Paginator"
 
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
@@ -22,8 +22,8 @@ export default class TheAlgorithm {
     featureScorer = [new favsFeatureScorer(), new reblogsFeatureScorer(), new interactsFeatureScorer(), new topPostFeatureScorer()]
     feedScorer = [new reblogsFeedScorer(), new diversityFeedScorer()]
     feed: StatusType[] = [];
-    api: mastodon.Client;
-    constructor(api: mastodon.Client, user: mastodon.v1.Account, valueCalculator: (((scores: weightsType) => Promise<number>) | null) = null) {
+    api: mastodon.rest.Client;
+    constructor(api: mastodon.rest.Client, user: mastodon.v1.Account, valueCalculator: (((scores: weightsType) => Promise<number>) | null) = null) {
         this.api = api;
         this.user = user;
         Storage.setIdentity(user);
@@ -87,7 +87,7 @@ export default class TheAlgorithm {
         // Add Time Penalty
         scoredFeed = scoredFeed.map((item: StatusType) => {
             const seconds = Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000);
-            const timediscount = Math.pow((1 + 0.7 * 0.2), -Math.pow((seconds / 3600), 2));
+            const timediscount = Math.pow((1 + 0.7 * 0.2), - Math.pow((seconds / 3600), 2));
             item.value = (item.value ?? 0) * timediscount
             return item;
         })
@@ -172,10 +172,14 @@ export default class TheAlgorithm {
         const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
         for (let key in currentWeight) {
             let reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
-            currentWeight[key] = currentWeight[key] + 0.02 * currentWeight[key] * reweight;
+            currentWeight[key] = currentWeight[key] + 0.001 * currentWeight[key] * reweight;
             console.log(reweight);
         }
         await this.setWeights(currentWeight);
         return currentWeight;
+    }
+
+    list() {
+        return new Paginator(this.feed)
     }
 }

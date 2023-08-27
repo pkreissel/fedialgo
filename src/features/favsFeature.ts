@@ -1,7 +1,7 @@
-import { login, mastodon } from "masto";
+import { mastodon } from "masto";
 import { accFeatureType } from "../types";
 
-export default async function favFeature(api: mastodon.Client): Promise<accFeatureType> {
+export default async function favFeature(api: mastodon.rest.Client): Promise<accFeatureType> {
     let results: mastodon.v1.Status[] = [];
     let pages = 3;
     for await (const page of api.v1.favourites.list({ limit: 80 })) {
