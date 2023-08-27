@@ -22,59 +22,40 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Storage_1 = __importStar(require("../Storage"));
 class weightsStore extends Storage_1.default {
-    static getWeight(verboseName) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const weight = yield this.get(Storage_1.Key.WEIGHTS, true, verboseName);
-            if (weight != null) {
-                return weight;
-            }
-            return { [verboseName]: 1 };
-        });
+    static async getWeight(verboseName) {
+        const weight = await this.get(Storage_1.Key.WEIGHTS, true, verboseName);
+        if (weight != null) {
+            return weight;
+        }
+        return { [verboseName]: 1 };
     }
-    static setWeights(weights, verboseName) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.set(Storage_1.Key.WEIGHTS, weights, true, verboseName);
-        });
+    static async setWeights(weights, verboseName) {
+        await this.set(Storage_1.Key.WEIGHTS, weights, true, verboseName);
     }
-    static getWeightsMulti(verboseNames) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const weights = {};
-            for (const verboseName of verboseNames) {
-                const weight = yield this.getWeight(verboseName);
-                weights[verboseName] = weight[verboseName];
-            }
-            return weights;
-        });
+    static async getWeightsMulti(verboseNames) {
+        const weights = {};
+        for (const verboseName of verboseNames) {
+            const weight = await this.getWeight(verboseName);
+            weights[verboseName] = weight[verboseName];
+        }
+        return weights;
     }
-    static setWeightsMulti(weights) {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const verboseName in weights) {
-                yield this.setWeights({ [verboseName]: weights[verboseName] }, verboseName);
-            }
-        });
+    static async setWeightsMulti(weights) {
+        for (const verboseName in weights) {
+            await this.setWeights({ [verboseName]: weights[verboseName] }, verboseName);
+        }
     }
-    static defaultFallback(verboseName, defaultWeight) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // If the weight is not set, set it to the default weight
-            const weight = yield this.get(Storage_1.Key.WEIGHTS, true, verboseName);
-            if (weight == null) {
-                yield this.setWeights({ [verboseName]: defaultWeight }, verboseName);
-                return true;
-            }
-            return false;
-        });
+    static async defaultFallback(verboseName, defaultWeight) {
+        // If the weight is not set, set it to the default weight
+        const weight = await this.get(Storage_1.Key.WEIGHTS, true, verboseName);
+        if (weight == null) {
+            await this.setWeights({ [verboseName]: defaultWeight }, verboseName);
+            return true;
+        }
+        return false;
     }
 }
 exports.default = weightsStore;

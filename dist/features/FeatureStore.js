@@ -22,15 +22,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -41,62 +32,54 @@ const interactsFeature_1 = __importDefault(require("./interactsFeature"));
 const coreServerFeature_1 = __importDefault(require("./coreServerFeature"));
 const Storage_1 = __importStar(require("../Storage"));
 class FeatureStorage extends Storage_1.default {
-    static getTopFavs(api) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const topFavs = yield this.get(Storage_1.Key.TOP_FAVS);
-            console.log(topFavs);
-            if (topFavs != null && (yield this.getOpenings()) < 10) {
-                return topFavs;
-            }
-            else {
-                const favs = yield (0, favsFeature_1.default)(api);
-                yield this.set(Storage_1.Key.TOP_FAVS, favs);
-                return favs;
-            }
-        });
+    static async getTopFavs(api) {
+        const topFavs = await this.get(Storage_1.Key.TOP_FAVS);
+        console.log(topFavs);
+        if (topFavs != null && await this.getOpenings() < 10) {
+            return topFavs;
+        }
+        else {
+            const favs = await (0, favsFeature_1.default)(api);
+            await this.set(Storage_1.Key.TOP_FAVS, favs);
+            return favs;
+        }
     }
-    static getTopReblogs(api) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const topReblogs = yield this.get(Storage_1.Key.TOP_REBLOGS);
-            console.log(topReblogs);
-            if (topReblogs != null && (yield this.getOpenings()) < 10) {
-                return topReblogs;
-            }
-            else {
-                const reblogs = yield (0, reblogsFeature_1.default)(api);
-                yield this.set(Storage_1.Key.TOP_REBLOGS, reblogs);
-                return reblogs;
-            }
-        });
+    static async getTopReblogs(api) {
+        const topReblogs = await this.get(Storage_1.Key.TOP_REBLOGS);
+        console.log(topReblogs);
+        if (topReblogs != null && await this.getOpenings() < 10) {
+            return topReblogs;
+        }
+        else {
+            const reblogs = await (0, reblogsFeature_1.default)(api);
+            await this.set(Storage_1.Key.TOP_REBLOGS, reblogs);
+            return reblogs;
+        }
     }
-    static getTopInteracts(api) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const topInteracts = yield this.get(Storage_1.Key.TOP_INTERACTS);
-            console.log(topInteracts);
-            if (topInteracts != null && (yield this.getOpenings()) < 10) {
-                return topInteracts;
-            }
-            else {
-                const interacts = yield (0, interactsFeature_1.default)(api);
-                yield this.set(Storage_1.Key.TOP_INTERACTS, interacts);
-                return interacts;
-            }
-        });
+    static async getTopInteracts(api) {
+        const topInteracts = await this.get(Storage_1.Key.TOP_INTERACTS);
+        console.log(topInteracts);
+        if (topInteracts != null && await this.getOpenings() < 10) {
+            return topInteracts;
+        }
+        else {
+            const interacts = await (0, interactsFeature_1.default)(api);
+            await this.set(Storage_1.Key.TOP_INTERACTS, interacts);
+            return interacts;
+        }
     }
-    static getCoreServer(api) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const coreServer = yield this.get(Storage_1.Key.CORE_SERVER);
-            console.log(coreServer);
-            if (coreServer != null && (yield this.getOpenings()) < 10) {
-                return coreServer;
-            }
-            else {
-                const user = yield this.getIdentity();
-                const server = yield (0, coreServerFeature_1.default)(api, user);
-                yield this.set(Storage_1.Key.CORE_SERVER, server);
-                return server;
-            }
-        });
+    static async getCoreServer(api) {
+        const coreServer = await this.get(Storage_1.Key.CORE_SERVER);
+        console.log(coreServer);
+        if (coreServer != null && await this.getOpenings() < 10) {
+            return coreServer;
+        }
+        else {
+            const user = await this.getIdentity();
+            const server = await (0, coreServerFeature_1.default)(api, user);
+            await this.set(Storage_1.Key.CORE_SERVER, server);
+            return server;
+        }
     }
 }
 exports.default = FeatureStorage;

@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -23,73 +14,57 @@ var Key;
     Key["USER"] = "algouser";
     Key["WEIGHTS"] = "weights";
     Key["OPENINGS"] = "openings";
-})(Key = exports.Key || (exports.Key = {}));
+})(Key || (exports.Key = Key = {}));
 class Storage {
-    static get(key, groupedByUser = true, suffix = "") {
-        return __awaiter(this, void 0, void 0, function* () {
-            const suffixKey = this.suffix(key, suffix);
-            const storageKey = groupedByUser ? yield this.prefix(suffixKey) : suffixKey;
-            const jsonValue = yield async_storage_1.default.getItem(storageKey);
-            const value = jsonValue != null ? JSON.parse(jsonValue) : null;
-            return value != null ? value[storageKey] : null;
-        });
+    static async get(key, groupedByUser = true, suffix = "") {
+        const suffixKey = this.suffix(key, suffix);
+        const storageKey = groupedByUser ? await this.prefix(suffixKey) : suffixKey;
+        const jsonValue = await async_storage_1.default.getItem(storageKey);
+        const value = jsonValue != null ? JSON.parse(jsonValue) : null;
+        return value != null ? value[storageKey] : null;
     }
-    static set(key, value, groupedByUser = true, suffix = "") {
-        return __awaiter(this, void 0, void 0, function* () {
-            const suffixKey = this.suffix(key, suffix);
-            const storageKey = groupedByUser ? yield this.prefix(suffixKey) : suffixKey;
-            const jsonValue = JSON.stringify({ [storageKey]: value });
-            yield async_storage_1.default.setItem(storageKey, jsonValue);
-        });
+    static async set(key, value, groupedByUser = true, suffix = "") {
+        const suffixKey = this.suffix(key, suffix);
+        const storageKey = groupedByUser ? await this.prefix(suffixKey) : suffixKey;
+        const jsonValue = JSON.stringify({ [storageKey]: value });
+        await async_storage_1.default.setItem(storageKey, jsonValue);
     }
     static suffix(key, suffix) {
         if (suffix === "")
             return key;
         return `${key}_${suffix}`;
     }
-    static remove(key, groupedByUser = true, suffix = "") {
-        return __awaiter(this, void 0, void 0, function* () {
-            const suffixKey = this.suffix(key, suffix);
-            const storageKey = groupedByUser ? yield Storage.prefix(suffixKey) : suffixKey;
-            yield async_storage_1.default.removeItem(storageKey);
-        });
+    static async remove(key, groupedByUser = true, suffix = "") {
+        const suffixKey = this.suffix(key, suffix);
+        const storageKey = groupedByUser ? await Storage.prefix(suffixKey) : suffixKey;
+        await async_storage_1.default.removeItem(storageKey);
     }
-    static prefix(key) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.getIdentity();
-            return `${user.id}_${key}`;
-        });
+    static async prefix(key) {
+        const user = await this.getIdentity();
+        return `${user.id}_${key}`;
     }
-    static logOpening() {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log("Logging Opening");
-            const openings = parseInt(yield this.get(Key.OPENINGS, true));
-            if (openings == null || isNaN(openings)) {
-                yield this.set(Key.OPENINGS, "1", true);
-            }
-            else {
-                yield this.set(Key.OPENINGS, (openings + 1).toString(), true);
-            }
-        });
+    static async logOpening() {
+        console.log("Logging Opening");
+        const openings = parseInt(await this.get(Key.OPENINGS, true));
+        if (openings == null || isNaN(openings)) {
+            await this.set(Key.OPENINGS, "1", true);
+        }
+        else {
+            await this.set(Key.OPENINGS, (openings + 1).toString(), true);
+        }
     }
-    static getOpenings() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const openings = parseInt(yield this.get(Key.OPENINGS, true));
-            return openings;
-        });
+    static async getOpenings() {
+        const openings = parseInt(await this.get(Key.OPENINGS, true));
+        return openings;
     }
-    static getIdentity() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const userJson = yield async_storage_1.default.getItem(Key.USER);
-            const user = userJson != null ? JSON.parse(userJson) : null;
-            return user;
-        });
+    static async getIdentity() {
+        const userJson = await async_storage_1.default.getItem(Key.USER);
+        const user = userJson != null ? JSON.parse(userJson) : null;
+        return user;
     }
-    static setIdentity(user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const userJson = JSON.stringify(user);
-            yield async_storage_1.default.setItem(Key.USER, userJson);
-        });
+    static async setIdentity(user) {
+        const userJson = JSON.stringify(user);
+        await async_storage_1.default.setItem(Key.USER, userJson);
     }
 }
 exports.default = Storage;

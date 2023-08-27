@@ -2,14 +2,15 @@ import { mastodon } from "masto";
 import { FeedFetcher, StatusType, weightsType } from "./types";
 import { favsFeatureScorer, interactsFeatureScorer, reblogsFeatureScorer, diversityFeedScorer, reblogsFeedScorer, FeatureScorer, FeedScorer, topPostFeatureScorer } from "./scorer";
 import getHomeFeed from "./feeds/homeFeed";
+import Paginator from "./Paginator";
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
     fetchers: (typeof getHomeFeed)[];
     featureScorer: (favsFeatureScorer | interactsFeatureScorer | reblogsFeatureScorer | topPostFeatureScorer)[];
     feedScorer: (diversityFeedScorer | reblogsFeedScorer)[];
     feed: StatusType[];
-    api: mastodon.Client;
-    constructor(api: mastodon.Client, user: mastodon.v1.Account, valueCalculator?: (((scores: weightsType) => Promise<number>) | null));
+    api: mastodon.rest.Client;
+    constructor(api: mastodon.rest.Client, user: mastodon.v1.Account, valueCalculator?: (((scores: weightsType) => Promise<number>) | null));
     getFeedAdvanced(fetchers: Array<FeedFetcher>, featureScorer: Array<FeatureScorer>, feedScorer: Array<FeedScorer>): Promise<StatusType[]>;
     getFeed(): Promise<StatusType[]>;
     private _getScoreObj;
@@ -21,4 +22,5 @@ export default class TheAlgorithm {
     setWeights(weights: weightsType): Promise<StatusType[]>;
     getDescription(verboseName: string): string;
     weightAdjust(statusWeights: weightsType): Promise<weightsType | undefined>;
+    list(): Paginator;
 }
