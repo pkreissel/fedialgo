@@ -82,6 +82,7 @@ export default class TheAlgorithm {
             .filter((item: StatusType) => item.inReplyToId === null)
             .filter((item: StatusType) => item.content.includes("RT @") === false)
             .filter((item: StatusType) => !(item?.reblog?.reblogged ?? false))
+            .filter((item: StatusType) => !(!item?.reblog?.muted ?? true))
 
 
         // Add Time Penalty
