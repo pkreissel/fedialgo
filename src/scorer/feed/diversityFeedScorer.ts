@@ -7,7 +7,9 @@ export default class diversityFeedScorer extends FeedScorer {
     }
 
     feedExtractor(feed: StatusType[]) {
-        return feed.reduce((obj: any, status) => {
+        // this prevents just always the first post from being shown
+        const sortRandom = (a: any, b: any) => Math.random() - 0.5;
+        return feed.sort(sortRandom).reduce((obj: any, status) => {
             obj[status.account.acct] = (obj[status.account.acct] || 0) - 1;
             return obj;
         }, {});
