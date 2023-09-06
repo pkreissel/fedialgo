@@ -5,6 +5,8 @@ import { camelCase, snakeCase } from "change-case";
 export default async function getTopPostFeed(api: mastodon.rest.Client): Promise<mastodon.v1.Status[]> {
     const core_servers = await FeatureStore.getCoreServer(api)
     let results: any[] = [];
+
+    //Masto does not support top posts from foreign servers, so we have to do it manually
     const isRecord = (x: unknown): x is Record<string, unknown> =>
         typeof x === "object" && x !== null && x.constructor.name === "Object";
     const _transformKeys = <T>(
