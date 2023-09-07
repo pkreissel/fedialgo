@@ -64,7 +64,7 @@ class TheAlgorithm {
             .filter((item) => item.inReplyToId === null)
             .filter((item) => item.content.includes("RT @") === false)
             .filter((item) => !(item?.reblog?.reblogged ?? false))
-            .filter((item) => !(!item?.reblog?.muted ?? true));
+            .filter((item) => (!item?.reblog?.muted ?? true));
         // Add Time Penalty
         scoredFeed = scoredFeed.map((item) => {
             const seconds = Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000);
