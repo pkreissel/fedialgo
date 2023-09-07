@@ -22,6 +22,6 @@ export default class TheAlgorithm {
     getWeights(): Promise<weightsType>;
     setWeights(weights: weightsType): Promise<StatusType[]>;
     getDescription(verboseName: string): string;
-    weightAdjust(statusWeights: weightsType): Promise<weightsType | undefined>;
+    weightAdjust(statusWeights: weightsType, step?: number): Promise<weightsType | undefined>;
     list(): Paginator;
 }
