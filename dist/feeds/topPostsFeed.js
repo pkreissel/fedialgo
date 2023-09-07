@@ -8,6 +8,7 @@ const change_case_1 = require("change-case");
 async function getTopPostFeed(api) {
     const core_servers = await FeatureStore_1.default.getCoreServer(api);
     let results = [];
+    //Masto does not support top posts from foreign servers, so we have to do it manually
     const isRecord = (x) => typeof x === "object" && x !== null && x.constructor.name === "Object";
     const _transformKeys = (data, transform) => {
         if (Array.isArray(data)) {

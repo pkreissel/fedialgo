@@ -1,7 +1,6 @@
 import FeatureScorer from '../FeatureScorer'
 import { StatusType, accFeatureType } from '../../types'
 import { mastodon } from 'masto'
-import FeatureStorage from '../../features/FeatureStore'
 
 export default class chaosFeatureScorer extends FeatureScorer {
     constructor() {

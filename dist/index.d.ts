@@ -3,10 +3,11 @@ import { FeedFetcher, StatusType, weightsType } from "./types";
 import { favsFeatureScorer, interactsFeatureScorer, reblogsFeatureScorer, diversityFeedScorer, reblogsFeedScorer, FeatureScorer, FeedScorer, topPostFeatureScorer } from "./scorer";
 import getHomeFeed from "./feeds/homeFeed";
 import Paginator from "./Paginator";
+import chaosFeatureScorer from "./scorer/feature/chaosFeatureScorer";
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
     fetchers: (typeof getHomeFeed)[];
-    featureScorer: (favsFeatureScorer | interactsFeatureScorer | reblogsFeatureScorer | topPostFeatureScorer)[];
+    featureScorer: (favsFeatureScorer | interactsFeatureScorer | reblogsFeatureScorer | topPostFeatureScorer | chaosFeatureScorer)[];
     feedScorer: (diversityFeedScorer | reblogsFeedScorer)[];
     feed: StatusType[];
     api: mastodon.rest.Client;

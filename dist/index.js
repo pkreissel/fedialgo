@@ -9,10 +9,11 @@ const homeFeed_1 = __importDefault(require("./feeds/homeFeed"));
 const topPostsFeed_1 = __importDefault(require("./feeds/topPostsFeed"));
 const Storage_1 = __importDefault(require("./Storage"));
 const Paginator_1 = __importDefault(require("./Paginator"));
+const chaosFeatureScorer_1 = __importDefault(require("./scorer/feature/chaosFeatureScorer"));
 class TheAlgorithm {
     user;
     fetchers = [homeFeed_1.default, topPostsFeed_1.default];
-    featureScorer = [new scorer_1.favsFeatureScorer(), new scorer_1.reblogsFeatureScorer(), new scorer_1.interactsFeatureScorer(), new scorer_1.topPostFeatureScorer()];
+    featureScorer = [new scorer_1.favsFeatureScorer(), new scorer_1.reblogsFeatureScorer(), new scorer_1.interactsFeatureScorer(), new scorer_1.topPostFeatureScorer(), new chaosFeatureScorer_1.default()];
     feedScorer = [new scorer_1.reblogsFeedScorer(), new scorer_1.diversityFeedScorer()];
     feed = [];
     api;
@@ -62,7 +63,8 @@ class TheAlgorithm {
             .filter((item) => item != undefined)
             .filter((item) => item.inReplyToId === null)
             .filter((item) => item.content.includes("RT @") === false)
-            .filter((item) => !(item?.reblog?.reblogged ?? false));
+            .filter((item) => !(item?.reblog?.reblogged ?? false))
+            .filter((item) => !(!item?.reblog?.muted ?? true));
         // Add Time Penalty
         scoredFeed = scoredFeed.map((item) => {
             const seconds = Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000);

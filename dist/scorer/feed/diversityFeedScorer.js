@@ -9,7 +9,9 @@ class diversityFeedScorer extends FeedScorer_1.default {
         super("Diversity", "Downranks posts from users that you have seen a lot of posts from");
     }
     feedExtractor(feed) {
-        return feed.reduce((obj, status) => {
+        // this prevents just always the first post from being shown
+        const sortRandom = (a, b) => Math.random() - 0.5;
+        return feed.sort(sortRandom).reduce((obj, status) => {
             obj[status.account.acct] = (obj[status.account.acct] || 0) - 1;
             return obj;
         }, {});
