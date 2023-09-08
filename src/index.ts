@@ -144,6 +144,13 @@ export default class TheAlgorithm {
     }
 
     async setWeights(weights: weightsType): Promise<StatusType[]> {
+        //prevent weights from being set to 0
+        for (const key in weights) {
+            if (weights[key] == undefined || weights[key] == null || isNaN(weights[key])) {
+                console.log("Weights not set because of error");
+                return this.feed
+            }
+        }
         await weightsStore.setWeightsMulti(weights);
         const scoredFeed: StatusType[] = []
         for (const status of this.feed) {
