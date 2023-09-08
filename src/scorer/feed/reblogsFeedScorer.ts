@@ -9,9 +9,9 @@ export default class reblogsFeedScorer extends FeedScorer {
     feedExtractor(feed: StatusType[]) {
         return feed.reduce((obj: any, status) => {
             if (status.reblog) {
-                obj[status.reblog.uri] = (obj[status.reblog.uri] || 0) + 1;
+                obj[status.reblog.uri] = (obj[status.reblog.uri] || -1) + 1;
             } else {
-                obj[status.uri] = (obj[status.uri] || 0) + 1;
+                obj[status.uri] = (obj[status.uri] || -1) + 1;
             }
             return obj;
         }, {});
