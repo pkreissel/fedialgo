@@ -1,9 +1,6 @@
 name: Fedialgo Build and Test
 
 on:
-  push:
-    branches:
-      - main 
   pull_request:
     branches:
       - main 
@@ -13,10 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.head_ref }}
+            token: ${{ secrets.GH_TOKEN }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '18'  # Or your preferred version
 
@@ -31,3 +31,8 @@ jobs:
         env:
           MASTODON_URL: ${{ secrets.MASTODON_URL }}
           MASTODON_TOKEN: ${{ secrets.MASTODON_TOKEN }}
+
+      - name: Commit Build
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+            commit_message: "Build: ${{ github.sha }}"
