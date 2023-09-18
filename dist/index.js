@@ -77,7 +77,6 @@ class TheAlgorithm {
         //Remove duplicates
         scoredFeed = [...new Map(scoredFeed.map((item) => [item["uri"], item])).values()];
         this.feed = scoredFeed;
-        console.log(this.feed);
         return this.feed;
     }
     _getScoreObj(scoreNames, scores) {
@@ -149,7 +148,7 @@ class TheAlgorithm {
         const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
         for (let key in currentWeight) {
             let reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
-            currentWeight[key] = currentWeight[key] + step * currentWeight[key] * reweight;
+            currentWeight[key] = currentWeight[key] - step * currentWeight[key] * reweight;
             console.log(reweight);
         }
         await this.setWeights(currentWeight);
