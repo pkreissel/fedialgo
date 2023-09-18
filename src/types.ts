@@ -1,5 +1,7 @@
 import { mastodon } from 'masto';
 
+export type StorageValue = serverFeatureType | accFeatureType | mastodon.v1.Account | weightsType | string
+
 export interface weightsType {
     [key: string]: number; // Replace 'any' with the desired value type (e.g., string, number, etc.)
 }

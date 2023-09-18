@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { serverFeatureType, accFeatureType, weightsType } from "./types";
+import { StorageValue } from "./types";
 import { mastodon } from "masto";
 
 export enum Key {
@@ -13,7 +13,6 @@ export enum Key {
     LAST_OPENED = "lastOpened",
 }
 
-type StorageValue = serverFeatureType | accFeatureType | mastodon.v1.Account | weightsType | string
 
 
 export default class Storage {
