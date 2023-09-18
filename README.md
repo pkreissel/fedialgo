@@ -1,6 +1,6 @@
 # fedialgo
 
-Tests are: ![Tests](https://github.com/pkreissel/fedialgo/actions/workflows/CI/badge.svg)
+[![Fedialgo Build and Test](https://github.com/pkreissel/fedialgo/actions/workflows/CI.yaml/badge.svg)](https://github.com/pkreissel/fedialgo/actions/workflows/CI.yaml)
 Fedialgo is an typescript module, that can be used to produce an algorithmic fediverse experience. This will replace the project "fedifeed" and make it possible to implement the idea into all kinds of other projects. It uses React Native Async Storage, so it should also work in React Native Projects, but havent tested it yet. 
 
 ##
