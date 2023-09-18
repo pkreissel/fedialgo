@@ -35,7 +35,7 @@ class FeatureStorage extends Storage_1.default {
     static async getTopFavs(api) {
         const topFavs = await this.get(Storage_1.Key.TOP_FAVS);
         console.log(topFavs);
-        if (topFavs != null && await this.getOpenings() < 10) {
+        if (topFavs != null && await this.getOpenings() % 10 < 9) {
             return topFavs;
         }
         else {
@@ -47,7 +47,7 @@ class FeatureStorage extends Storage_1.default {
     static async getTopReblogs(api) {
         const topReblogs = await this.get(Storage_1.Key.TOP_REBLOGS);
         console.log(topReblogs);
-        if (topReblogs != null && await this.getOpenings() < 10) {
+        if (topReblogs != null && await this.getOpenings() % 10 < 9) {
             return topReblogs;
         }
         else {
@@ -59,7 +59,7 @@ class FeatureStorage extends Storage_1.default {
     static async getTopInteracts(api) {
         const topInteracts = await this.get(Storage_1.Key.TOP_INTERACTS);
         console.log(topInteracts);
-        if (topInteracts != null && await this.getOpenings() < 10) {
+        if (topInteracts != null && await this.getOpenings() % 10 < 9) {
             return topInteracts;
         }
         else {
@@ -71,7 +71,7 @@ class FeatureStorage extends Storage_1.default {
     static async getCoreServer(api) {
         const coreServer = await this.get(Storage_1.Key.CORE_SERVER);
         console.log(coreServer);
-        if (coreServer != null && await this.getOpenings() < 10) {
+        if (coreServer != null && await this.getOpenings() % 10 < 9) {
             return coreServer;
         }
         else {

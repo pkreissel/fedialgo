@@ -113,6 +113,13 @@ class TheAlgorithm {
         return weights;
     }
     async setWeights(weights) {
+        //prevent weights from being set to 0
+        for (const key in weights) {
+            if (weights[key] == undefined || weights[key] == null || isNaN(weights[key])) {
+                console.log("Weights not set because of error");
+                return this.feed;
+            }
+        }
         await weightsStore_1.default.setWeightsMulti(weights);
         const scoredFeed = [];
         for (const status of this.feed) {

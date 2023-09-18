@@ -14,6 +14,7 @@ var Key;
     Key["USER"] = "algouser";
     Key["WEIGHTS"] = "weights";
     Key["OPENINGS"] = "openings";
+    Key["LAST_OPENED"] = "lastOpened";
 })(Key || (exports.Key = Key = {}));
 class Storage {
     static async get(key, groupedByUser = true, suffix = "") {
@@ -52,6 +53,11 @@ class Storage {
         else {
             await this.set(Key.OPENINGS, (openings + 1).toString(), true);
         }
+        await this.set(Key.LAST_OPENED, new Date().getTime().toString(), true);
+    }
+    static async getLastOpened() {
+        const lastOpened = parseInt(await this.get(Key.LAST_OPENED, true));
+        return lastOpened;
     }
     static async getOpenings() {
         const openings = parseInt(await this.get(Key.OPENINGS, true));

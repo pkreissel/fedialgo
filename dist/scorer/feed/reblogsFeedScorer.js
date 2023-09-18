@@ -11,10 +11,10 @@ class reblogsFeedScorer extends FeedScorer_1.default {
     feedExtractor(feed) {
         return feed.reduce((obj, status) => {
             if (status.reblog) {
-                obj[status.reblog.uri] = (obj[status.reblog.uri] || 0) + 1;
+                obj[status.reblog.uri] = (obj[status.reblog.uri] || -1) + 1;
             }
             else {
-                obj[status.uri] = (obj[status.uri] || 0) + 1;
+                obj[status.uri] = (obj[status.uri] || -1) + 1;
             }
             return obj;
         }, {});
