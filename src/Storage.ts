@@ -10,6 +10,7 @@ export enum Key {
     USER = 'algouser',
     WEIGHTS = 'weights',
     OPENINGS = "openings",
+    LAST_OPENED = "lastOpened",
 }
 
 type StorageValue = serverFeatureType | accFeatureType | mastodon.v1.Account | weightsType | string
@@ -56,6 +57,12 @@ export default class Storage {
         } else {
             await this.set(Key.OPENINGS, (openings + 1).toString(), true);
         }
+        await this.set(Key.LAST_OPENED, new Date().getTime().toString(), true);
+    }
+
+    static async getLastOpened() {
+        const lastOpened = parseInt(await this.get(Key.LAST_OPENED, true) as string);
+        return lastOpened;
     }
 
     static async getOpenings() {
