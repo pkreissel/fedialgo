@@ -30,9 +30,6 @@ jobs:
           MASTODON_TOKEN: ${{ secrets.MASTODON_TOKEN }}
 
       - name: Commit Build
-        run:
-            git config --global user.name "pkreissel"
-            git config --global user.email "pkreissel@users.noreply.github.com" 
-            git add .
-            git commit -m "Build ${{ github.event.head_commit.message }}"
-            git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+            commit_message: "Build: ${{ github.sha }}"
