@@ -28,3 +28,6 @@ jobs:
 
       - name: Run tests
         run: npm run test
+        env:
+          MASTODON_URL: ${{ secrets.MASTODON_URL }}
+          MASTODON_TOKEN: ${{ secrets.MASTODON_TOKEN }}
