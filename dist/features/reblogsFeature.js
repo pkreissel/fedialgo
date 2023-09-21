@@ -3,12 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 async function getReblogsFeature(api) {
     let results = [];
     let pages = 3;
-    for await (const page of api.v1.timelines.home.list({ limit: 80 })) {
-        results = results.concat(page);
-        pages--;
-        if (pages === 0 || results.length < 80) {
-            break;
+    try {
+        for await (const page of api.v1.timelines.home.list({ limit: 80 })) {
+            results = results.concat(page);
+            pages--;
+            if (pages === 0 || results.length < 80) {
+                break;
+            }
         }
+    }
+    catch (e) {
+        return {};
     }
     const reblogFrequ = results.reduce((accumulator, status) => {
         if (status.reblog) {
