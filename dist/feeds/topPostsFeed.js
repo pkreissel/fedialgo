@@ -26,6 +26,9 @@ async function getTopPostFeed(api) {
     const servers = Object.keys(core_servers).sort((a, b) => {
         return core_servers[b] - core_servers[a];
     }).slice(0, 10);
+    if (servers.length === 0) {
+        return [];
+    }
     results = await Promise.all(servers.map(async (server) => {
         if (server === "undefined" || typeof server == "undefined" || server === "")
             return [];

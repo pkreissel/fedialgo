@@ -175,13 +175,12 @@ export default class TheAlgorithm {
     async weightAdjust(statusWeights: weightsType, step = 0.001): Promise<weightsType | undefined> {
         //Adjust Weights based on user interaction
         if (statusWeights == undefined) return;
-        const mean = Object.values(statusWeights).reduce((accumulator, currentValue) => accumulator + Math.abs(currentValue), 0) / Object.values(statusWeights).length;
+        const mean = Object.values(statusWeights).filter((value: number) => !isNaN(value)).reduce((accumulator, currentValue) => accumulator + Math.abs(currentValue), 0) / Object.values(statusWeights).length;
         const currentWeight: weightsType = await this.getWeights()
-        const currentMean = Object.values(currentWeight).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
+        const currentMean = Object.values(currentWeight).filter((value: number) => !isNaN(value)).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
         for (let key in currentWeight) {
             let reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
             currentWeight[key] = currentWeight[key] - step * currentWeight[key] * reweight;
-            console.log(reweight);
         }
         await this.setWeights(currentWeight);
         return currentWeight;
