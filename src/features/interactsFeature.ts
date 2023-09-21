@@ -4,12 +4,16 @@ import { accFeatureType } from "../types";
 export default async function interactFeature(api: mastodon.rest.Client): Promise<accFeatureType> {
     let results: any[] = [];
     let pages = 3;
-    for await (const page of api.v1.notifications.list({ limit: 80 })) {
-        results = results.concat(page)
-        pages--;
-        if (pages === 0 || results.length < 80) {
-            break;
+    try {
+        for await (const page of api.v1.notifications.list({ limit: 80 })) {
+            results = results.concat(page)
+            pages--;
+            if (pages === 0 || results.length < 80) {
+                break;
+            }
         }
+    } catch (e) {
+        return {};
     }
 
     const interactFrequ = results.reduce((accumulator: any, status: mastodon.v1.Status,) => {

@@ -34,6 +34,10 @@ export default async function getTopPostFeed(api: mastodon.rest.Client): Promise
         return core_servers[b] - core_servers[a]
     }).slice(0, 10)
 
+    if (servers.length === 0) {
+        return [];
+    }
+
     results = await Promise.all(servers.map(async (server: string): Promise<mastodon.v1.Status[]> => {
         if (server === "undefined" || typeof server == "undefined" || server === "") return [];
         let res, json;
