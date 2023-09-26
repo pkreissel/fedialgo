@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const FeatureStore_1 = __importDefault(require("../features/FeatureStore"));
 const change_case_1 = require("change-case");
+const Storage_1 = __importDefault(require("../Storage"));
 async function getTopPostFeed(api) {
     const core_servers = await FeatureStore_1.default.getCoreServer(api);
     let results = [];
@@ -54,6 +55,7 @@ async function getTopPostFeed(api) {
         }).slice(0, 10);
     }));
     console.log(results);
-    return results.flat();
+    const lastOpened = new Date(await Storage_1.default.getLastOpened() - 28800000) ?? new Date(0);
+    return results.flat().filter((status) => new Date(status.createdAt) > lastOpened);
 }
 exports.default = getTopPostFeed;
