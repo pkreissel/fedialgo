@@ -1,6 +1,8 @@
 import { mastodon } from "masto";
 import FeatureStore from "../features/FeatureStore";
 import { camelCase, snakeCase } from "change-case";
+import { StatusType } from "../types";
+import Storage from "../Storage";
 
 export default async function getTopPostFeed(api: mastodon.rest.Client): Promise<mastodon.v1.Status[]> {
     const core_servers = await FeatureStore.getCoreServer(api)
@@ -52,15 +54,17 @@ export default async function getTopPostFeed(api: mastodon.rest.Client): Promise
         if (!res.ok) {
             return [];
         }
-        const data: any[] = _transformKeys(json, camelCase);
+        const data: StatusType[] = _transformKeys(json, camelCase);
         if (data === undefined) {
             return [];
         }
-        return data.map((status: any) => {
+        return data.map((status: StatusType) => {
             status.topPost = true;
             return status;
         }).slice(0, 10)
     }))
     console.log(results)
-    return results.flat();
+
+    const lastOpened = new Date(await Storage.getLastOpened() - 28800000) ?? new Date(0)
+    return results.flat().filter((status: StatusType) => new Date(status.createdAt) > lastOpened)
 }
