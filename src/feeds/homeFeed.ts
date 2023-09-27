@@ -4,7 +4,7 @@ import Storage from "../Storage";
 export default async function getHomeFeed(api: mastodon.rest.Client, user: mastodon.v1.Account) {
     let results: any[] = [];
     let pages = 10;
-    const lastOpened = new Date(await Storage.getLastOpened()) ?? new Date(0)
+    const lastOpened = new Date(await Storage.getLastOpened() - 600) ?? new Date(0)
     const defaultCutoff = new Date(Date.now() - 43200000)
     const dateCutoff = lastOpened < defaultCutoff ? defaultCutoff : lastOpened
     console.log("Date Cutoff: ", dateCutoff)
