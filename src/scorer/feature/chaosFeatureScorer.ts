@@ -12,6 +12,7 @@ export default class chaosFeatureScorer extends FeatureScorer {
         })
     }
     async score(api: mastodon.rest.Client, status: StatusType) {
+        if (status.topPost) return 0
         return Math.random() > 0.9 ? 1 : 0
     }
 }
