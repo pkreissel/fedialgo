@@ -6,23 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const FeatureStore_1 = __importDefault(require("../features/FeatureStore"));
 const change_case_1 = require("change-case");
 const Storage_1 = __importDefault(require("../Storage"));
+const helpers_1 = require("../helpers");
 async function getTopPostFeed(api) {
     const core_servers = await FeatureStore_1.default.getCoreServer(api);
     let results = [];
-    //Masto does not support top posts from foreign servers, so we have to do it manually
-    const isRecord = (x) => typeof x === "object" && x !== null && x.constructor.name === "Object";
-    const _transformKeys = (data, transform) => {
-        if (Array.isArray(data)) {
-            return data.map((value) => _transformKeys(value, transform));
-        }
-        if (isRecord(data)) {
-            return Object.fromEntries(Object.entries(data).map(([key, value]) => [
-                transform(key),
-                _transformKeys(value, transform),
-            ]));
-        }
-        return data;
-    };
     //Get Top Servers
     const servers = Object.keys(core_servers).sort((a, b) => {
         return core_servers[b] - core_servers[a];
@@ -45,7 +32,7 @@ async function getTopPostFeed(api) {
         if (!res.ok) {
             return [];
         }
-        const data = _transformKeys(json, change_case_1.camelCase);
+        const data = (0, helpers_1._transformKeys)(json, change_case_1.camelCase);
         if (data === undefined) {
             return [];
         }

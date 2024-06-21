@@ -3,34 +3,13 @@ import FeatureStore from "../features/FeatureStore";
 import { camelCase, snakeCase } from "change-case";
 import { StatusType } from "../types";
 import Storage from "../Storage";
+import { _transformKeys } from "../helpers";
 
-export default async function getTopPostFeed(api: mastodon.rest.Client): Promise<mastodon.v1.Status[]> {
+export default async function getTopPostFeed(api: mastodon.rest.Client): Promise<StatusType[]> {
     const core_servers = await FeatureStore.getCoreServer(api)
     let results: any[] = [];
 
-    //Masto does not support top posts from foreign servers, so we have to do it manually
-    const isRecord = (x: unknown): x is Record<string, unknown> =>
-        typeof x === "object" && x !== null && x.constructor.name === "Object";
-    const _transformKeys = <T>(
-        data: unknown,
-        transform: (key: string) => string,
-    ): T => {
-        if (Array.isArray(data)) {
-            return data.map((value) =>
-                _transformKeys(value, transform),
-            ) as unknown as T;
-        }
 
-        if (isRecord(data)) {
-            return Object.fromEntries(
-                Object.entries(data).map(([key, value]) => [
-                    transform(key),
-                    _transformKeys(value, transform),
-                ]),
-            ) as T;
-        }
-        return data as T;
-    };
     //Get Top Servers
     const servers = Object.keys(core_servers).sort((a, b) => {
         return core_servers[b] - core_servers[a]

@@ -4,10 +4,11 @@ import { favsFeatureScorer, interactsFeatureScorer, reblogsFeatureScorer, divers
 import getHomeFeed from "./feeds/homeFeed";
 import Paginator from "./Paginator";
 import chaosFeatureScorer from "./scorer/feature/chaosFeatureScorer";
+import recommendedFeatureScorer from "./scorer/feature/recommendedFeatureScorer";
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
     fetchers: (typeof getHomeFeed)[];
-    featureScorer: (favsFeatureScorer | interactsFeatureScorer | reblogsFeatureScorer | topPostFeatureScorer | chaosFeatureScorer)[];
+    featureScorer: (favsFeatureScorer | interactsFeatureScorer | reblogsFeatureScorer | topPostFeatureScorer | chaosFeatureScorer | recommendedFeatureScorer)[];
     feedScorer: (diversityFeedScorer | reblogsFeedScorer)[];
     feed: StatusType[];
     api: mastodon.rest.Client;

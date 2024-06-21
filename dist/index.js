@@ -10,10 +10,19 @@ const topPostsFeed_1 = __importDefault(require("./feeds/topPostsFeed"));
 const Storage_1 = __importDefault(require("./Storage"));
 const Paginator_1 = __importDefault(require("./Paginator"));
 const chaosFeatureScorer_1 = __importDefault(require("./scorer/feature/chaosFeatureScorer"));
+const recommenderFeed_1 = __importDefault(require("./feeds/recommenderFeed"));
+const recommendedFeatureScorer_1 = __importDefault(require("./scorer/feature/recommendedFeatureScorer"));
 class TheAlgorithm {
     user;
-    fetchers = [homeFeed_1.default, topPostsFeed_1.default];
-    featureScorer = [new scorer_1.favsFeatureScorer(), new scorer_1.reblogsFeatureScorer(), new scorer_1.interactsFeatureScorer(), new scorer_1.topPostFeatureScorer(), new chaosFeatureScorer_1.default()];
+    fetchers = [homeFeed_1.default, topPostsFeed_1.default, recommenderFeed_1.default];
+    featureScorer = [
+        new scorer_1.favsFeatureScorer(),
+        new scorer_1.reblogsFeatureScorer(),
+        new scorer_1.interactsFeatureScorer(),
+        new scorer_1.topPostFeatureScorer(),
+        new chaosFeatureScorer_1.default(),
+        new recommendedFeatureScorer_1.default()
+    ];
     feedScorer = [new scorer_1.reblogsFeedScorer(), new scorer_1.diversityFeedScorer()];
     feed = [];
     api;

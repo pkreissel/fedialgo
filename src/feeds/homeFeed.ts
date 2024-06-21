@@ -1,7 +1,8 @@
 import { mastodon } from "masto";
 import Storage from "../Storage";
+import { StatusType } from "../types";
 
-export default async function getHomeFeed(api: mastodon.rest.Client, user: mastodon.v1.Account) {
+export default async function getHomeFeed(api: mastodon.rest.Client, user: mastodon.v1.Account): Promise<StatusType[]> {
     let results: any[] = [];
     let pages = 10;
     const lastOpened = new Date(await Storage.getLastOpened() - 600) ?? new Date(0)

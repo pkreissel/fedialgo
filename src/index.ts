@@ -16,11 +16,20 @@ import topPostsFeed from "./feeds/topPostsFeed";
 import Storage from "./Storage";
 import Paginator from "./Paginator"
 import chaosFeatureScorer from "./scorer/feature/chaosFeatureScorer";
+import getRecommenderFeed from "./feeds/recommenderFeed";
+import recommendedFeatureScorer from "./scorer/feature/recommendedFeatureScorer";
 
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
-    fetchers = [getHomeFeed, topPostsFeed]
-    featureScorer = [new favsFeatureScorer(), new reblogsFeatureScorer(), new interactsFeatureScorer(), new topPostFeatureScorer(), new chaosFeatureScorer()]
+    fetchers = [getHomeFeed, topPostsFeed, getRecommenderFeed];
+    featureScorer = [
+        new favsFeatureScorer(),
+        new reblogsFeatureScorer(),
+        new interactsFeatureScorer(),
+        new topPostFeatureScorer(),
+        new chaosFeatureScorer(),
+        new recommendedFeatureScorer()
+    ];
     feedScorer = [new reblogsFeedScorer(), new diversityFeedScorer()]
     feed: StatusType[] = [];
     api: mastodon.rest.Client;
