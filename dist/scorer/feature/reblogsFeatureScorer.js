@@ -14,7 +14,7 @@ class reblogsFeatureScorer extends FeatureScorer_1.default {
             defaultWeight: 3,
         });
     }
-    async score(api, status) {
+    async score(_api, status) {
         const authorScore = (status.account.acct in this.feature) ? this.feature[status.account.acct] : 0;
         const reblogScore = (status.reblog && status.reblog.account.acct in this.feature) ? this.feature[status.reblog.account.acct] : 0;
         return authorScore + reblogScore;

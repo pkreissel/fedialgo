@@ -71,7 +71,7 @@ class FeatureStorage extends Storage_1.default {
     static async getCoreServer(api) {
         const coreServer = await this.get(Storage_1.Key.CORE_SERVER);
         console.log(coreServer);
-        if (coreServer != null && await this.getOpenings() % 10 < 9) {
+        if (coreServer != null && await this.getOpenings() % 10 != 9) {
             return coreServer;
         }
         else {

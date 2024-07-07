@@ -2,6 +2,6 @@ import FeedScorer from "../FeedScorer";
 import { StatusType } from "../../types";
 export default class diversityFeedScorer extends FeedScorer {
     constructor();
-    feedExtractor(feed: StatusType[]): any;
-    score(status: StatusType): Promise<any>;
+    feedExtractor(feed: StatusType[]): Record<string, number>;
+    score(status: StatusType): Promise<number>;
 }

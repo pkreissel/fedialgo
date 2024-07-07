@@ -10,10 +10,17 @@ const topPostsFeed_1 = __importDefault(require("./feeds/topPostsFeed"));
 const Storage_1 = __importDefault(require("./Storage"));
 const Paginator_1 = __importDefault(require("./Paginator"));
 const chaosFeatureScorer_1 = __importDefault(require("./scorer/feature/chaosFeatureScorer"));
+const recommenderFeed_1 = __importDefault(require("./feeds/recommenderFeed"));
 class TheAlgorithm {
     user;
-    fetchers = [homeFeed_1.default, topPostsFeed_1.default];
-    featureScorer = [new scorer_1.favsFeatureScorer(), new scorer_1.reblogsFeatureScorer(), new scorer_1.interactsFeatureScorer(), new scorer_1.topPostFeatureScorer(), new chaosFeatureScorer_1.default()];
+    fetchers = [homeFeed_1.default, topPostsFeed_1.default, recommenderFeed_1.default];
+    featureScorer = [
+        new scorer_1.favsFeatureScorer(),
+        new scorer_1.reblogsFeatureScorer(),
+        new scorer_1.interactsFeatureScorer(),
+        new scorer_1.topPostFeatureScorer(),
+        new chaosFeatureScorer_1.default(),
+    ];
     feedScorer = [new scorer_1.reblogsFeedScorer(), new scorer_1.diversityFeedScorer()];
     feed = [];
     api;
@@ -64,8 +71,8 @@ class TheAlgorithm {
             .filter((item) => item.inReplyToId === null)
             .filter((item) => item.content.includes("RT @") === false)
             .filter((item) => !(item?.reblog?.reblogged ?? false))
-            .filter((item) => (!item?.reblog?.muted ?? true))
-            .filter((item) => (!item?.muted ?? true));
+            .filter((item) => !(item?.reblog?.muted ?? false))
+            .filter((item) => !(item?.muted ?? false));
         // Add Time Penalty
         scoredFeed = scoredFeed.map((item) => {
             const seconds = Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000);
@@ -89,7 +96,7 @@ class TheAlgorithm {
     async _getValueFromScores(scores) {
         const weights = await weightsStore_1.default.getWeightsMulti(Object.keys(scores));
         const weightedScores = Object.keys(scores).reduce((obj, cur) => {
-            obj = obj + (scores[cur] * weights[cur] ?? 0);
+            obj = obj + (scores[cur] ?? 0) * (weights[cur] ?? 0);
             return obj;
         }, 0);
         return weightedScores;
@@ -147,8 +154,8 @@ class TheAlgorithm {
         const mean = Object.values(statusWeights).filter((value) => !isNaN(value)).reduce((accumulator, currentValue) => accumulator + Math.abs(currentValue), 0) / Object.values(statusWeights).length;
         const currentWeight = await this.getWeights();
         const currentMean = Object.values(currentWeight).filter((value) => !isNaN(value)).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
-        for (let key in currentWeight) {
-            let reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
+        for (const key in currentWeight) {
+            const reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
             currentWeight[key] = currentWeight[key] - step * currentWeight[key] * reweight;
         }
         await this.setWeights(currentWeight);

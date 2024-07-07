@@ -13,6 +13,7 @@ async function interactFeature(api) {
         }
     }
     catch (e) {
+        console.error(e);
         return {};
     }
     const interactFrequ = results.reduce((accumulator, status) => {

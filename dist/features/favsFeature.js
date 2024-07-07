@@ -13,6 +13,7 @@ async function favFeature(api) {
         }
     }
     catch (e) {
+        console.error(e);
         return {};
     }
     const favFrequ = results.reduce((accumulator, status) => {

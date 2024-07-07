@@ -11,6 +11,8 @@ export type serverFeatureType = {
 };
 export interface StatusType extends mastodon.v1.Status {
     topPost?: boolean;
+    recommended?: boolean;
+    similarity?: number;
     scores?: weightsType;
     value?: number;
     reblog?: StatusType;

@@ -1,5 +1,18 @@
 import { mastodon } from "masto";
 import { serverFeatureType } from "../types";
+import { _transformKeys, mastodonFetch } from "../helpers";
+
+
+async function getMonthlyUsers(server: string): Promise<number> {
+    try {
+        const instance = await mastodonFetch<mastodon.v2.Instance>(server, "api/v2/instance")
+        console.log(instance)
+        return instance ? instance.usage.users.activeMonth : 0;
+    } catch (error) {
+        console.error(`Error fetching data for server ${server}:`, error);
+        return 0; // Return 0 if we can't get the data
+    }
+}
 
 export default async function coreServerFeature(api: mastodon.rest.Client, user: mastodon.v1.Account): Promise<serverFeatureType> {
     let results: mastodon.v1.Account[] = [];
@@ -13,6 +26,7 @@ export default async function coreServerFeature(api: mastodon.rest.Client, user:
             }
         }
     } catch (e) {
+        console.error(e)
         return {};
     }
 
@@ -26,5 +40,22 @@ export default async function coreServerFeature(api: mastodon.rest.Client, user:
         return accumulator
     }, {})
 
-    return serverFrequ;
+    console.log(serverFrequ)
+
+    // for top 30 servers
+    const top30 = Object.keys(serverFrequ).sort((a, b) => serverFrequ[b] - serverFrequ[a]).slice(0, 30)
+
+    console.log("Top 30 servers: ", top30)
+    const monthlyUsers = await Promise.all(top30.map(server => getMonthlyUsers(server)))
+
+    console.log("Monthly Users: ", monthlyUsers)
+
+    const overrepresentedServerFrequ = top30.reduce((acc, server, index) => {
+        const activeUsers = monthlyUsers[index];
+        if (activeUsers < 1) return acc;
+        const ratio = serverFrequ[server] / activeUsers;
+        return { ...acc, [server]: ratio }
+    }, {})
+
+    return overrepresentedServerFrequ;
 }

@@ -13,7 +13,7 @@ export declare enum Key {
 export default class Storage {
     protected static get(key: Key, groupedByUser?: boolean, suffix?: string): Promise<StorageValue>;
     protected static set(key: Key, value: StorageValue, groupedByUser?: boolean, suffix?: string): Promise<void>;
-    static suffix(key: Key, suffix: any): string;
+    static suffix(key: Key, suffix: string): string;
     protected static remove(key: Key, groupedByUser?: boolean, suffix?: string): Promise<void>;
     protected static prefix(key: string): Promise<string>;
     static logOpening(): Promise<void>;

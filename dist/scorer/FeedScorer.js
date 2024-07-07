@@ -15,10 +15,10 @@ class FeedScorer {
         this.features = await this.feedExtractor(feed);
         this._isReady = true;
     }
-    feedExtractor(feed) {
+    feedExtractor(_feed) {
         throw new Error("Method not implemented.");
     }
-    async score(status) {
+    async score(_status) {
         if (!this._isReady) {
             throw new Error("FeedScorer not ready");
         }

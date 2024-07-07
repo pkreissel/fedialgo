@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Storage_1 = __importDefault(require("../Storage"));
-async function getHomeFeed(api, user) {
+async function getHomeFeed(api, _user) {
     let results = [];
     let pages = 10;
-    const lastOpened = new Date(await Storage_1.default.getLastOpened() - 600) ?? new Date(0);
+    const lastOpened = new Date((await Storage_1.default.getLastOpened() ?? 0) - 600);
     const defaultCutoff = new Date(Date.now() - 43200000);
     const dateCutoff = lastOpened < defaultCutoff ? defaultCutoff : lastOpened;
     console.log("Date Cutoff: ", dateCutoff);

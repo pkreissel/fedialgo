@@ -47,7 +47,7 @@ export default class FeatureStorage extends Storage {
     static async getCoreServer(api: mastodon.rest.Client): Promise<serverFeatureType> {
         const coreServer: serverFeatureType = await this.get(Key.CORE_SERVER) as serverFeatureType;
         console.log(coreServer);
-        if (coreServer != null && await this.getOpenings() % 10 < 9) {
+        if (coreServer != null && await this.getOpenings() % 10 != 9) {
             return coreServer;
         } else {
             const user = await this.getIdentity();

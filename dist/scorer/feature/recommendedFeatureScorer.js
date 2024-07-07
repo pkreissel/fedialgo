@@ -4,17 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const FeatureScorer_1 = __importDefault(require("../FeatureScorer"));
-class topPostFeatureScorer extends FeatureScorer_1.default {
+class recommendedFeatureScorer extends FeatureScorer_1.default {
     constructor() {
         super({
             featureGetter: (_api) => { return Promise.resolve({}); },
-            verboseName: "TopPosts",
-            description: "Posts that are trending on multiple of your most popular instances",
+            verboseName: "Recommended",
+            description: "Posts that are recommended by AI embeddings",
             defaultWeight: 1,
         });
     }
     async score(_api, status) {
-        return status.topPost ? 1 : 0;
+        return status.recommended ? status.similarity ?? 1 : 0;
     }
 }
-exports.default = topPostFeatureScorer;
+exports.default = recommendedFeatureScorer;

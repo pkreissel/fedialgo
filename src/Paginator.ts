@@ -1,11 +1,5 @@
 import { mastodon } from "masto";
-import TheAlgorithm from "./index";
-import { StatusType } from "./types";
 
-interface PaginationResult<StatusType> {
-    data: StatusType[];
-    hasNextPage: boolean;
-}
 
 export default class ForYouPaginator implements mastodon.Paginator<mastodon.v1.Status[]> {
     data: mastodon.v1.Status[]
@@ -17,14 +11,14 @@ export default class ForYouPaginator implements mastodon.Paginator<mastodon.v1.S
         this.direction = "next"
     }
     return(value: PromiseLike<undefined> | undefined): Promise<IteratorResult<mastodon.v1.Status[], undefined>> {
-        throw new Error("Method not implemented.");
+        throw new Error(`Method not implemented. ${value}`);
     }
     [Symbol.asyncIterator](): AsyncIterator<mastodon.v1.Status[], undefined, string | undefined> {
         throw new Error("Method not implemented.");
     }
 
-    then<TResult1 = mastodon.v1.Status[], TResult2 = never>(onfulfilled?: ((value: mastodon.v1.Status[]) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null | undefined): PromiseLike<TResult1 | TResult2> {
-        throw new Error("Method not implemented.");
+    then<TResult1 = mastodon.v1.Status[], TResult2 = never>(onfulfilled?: ((value: mastodon.v1.Status[]) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null | undefined): PromiseLike<TResult1 | TResult2> {
+        throw new Error(`Method not implemented. ${onfulfilled} ${onrejected}`);
     }
 
     async next(): Promise<IteratorResult<mastodon.v1.Status[], undefined>> {
@@ -52,6 +46,7 @@ export default class ForYouPaginator implements mastodon.Paginator<mastodon.v1.S
     }
 
     async throw(e?: unknown): Promise<IteratorResult<mastodon.v1.Status[], undefined>> {
+        console.error(e);
         return { value: undefined, done: true }
     }
 

@@ -31,7 +31,7 @@ export default class Storage {
         await AsyncStorage.setItem(storageKey, jsonValue);
     }
 
-    static suffix(key: Key, suffix: any) {
+    static suffix(key: Key, suffix: string) {
         if (suffix === "") return key;
         return `${key}_${suffix}`;
     }
