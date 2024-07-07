@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const change_case_1 = require("change-case");
 const helpers_1 = require("../helpers");
-async function getRecommenderFeed(api, user) {
+async function getRecommenderFeed(_api, _user) {
     let data, res;
     try {
         res = await fetch("http://127.0.0.1:5000");

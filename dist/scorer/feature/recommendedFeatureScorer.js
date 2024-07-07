@@ -7,13 +7,13 @@ const FeatureScorer_1 = __importDefault(require("../FeatureScorer"));
 class recommendedFeatureScorer extends FeatureScorer_1.default {
     constructor() {
         super({
-            featureGetter: (api) => { return Promise.resolve({}); },
+            featureGetter: (_api) => { return Promise.resolve({}); },
             verboseName: "Recommended",
             description: "Posts that are recommended by AI embeddings",
             defaultWeight: 1,
         });
     }
-    async score(api, status) {
+    async score(_api, status) {
         return status.recommended ? status.similarity ?? 1 : 0;
     }
 }

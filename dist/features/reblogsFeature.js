@@ -13,6 +13,7 @@ async function getReblogsFeature(api) {
         }
     }
     catch (e) {
+        console.error(e);
         return {};
     }
     const reblogFrequ = results.reduce((accumulator, status) => {

@@ -26,7 +26,7 @@ async function getTopPostFeed(api) {
         }).slice(0, 10) ?? [];
     }));
     console.log(results);
-    const lastOpened = new Date(await Storage_1.default.getLastOpened() - 28800000) ?? new Date(0);
+    const lastOpened = new Date((await Storage_1.default.getLastOpened() ?? 0) - 28800000);
     return results.flat().filter((status) => new Date(status.createdAt) > lastOpened);
 }
 exports.default = getTopPostFeed;

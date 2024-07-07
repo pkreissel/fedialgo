@@ -25,6 +25,7 @@ async function coreServerFeature(api, user) {
         }
     }
     catch (e) {
+        console.error(e);
         return {};
     }
     const serverFrequ = results.reduce((accumulator, follower) => {

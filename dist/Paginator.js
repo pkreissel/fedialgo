@@ -10,13 +10,13 @@ class ForYouPaginator {
         this.direction = "next";
     }
     return(value) {
-        throw new Error("Method not implemented.");
+        throw new Error(`Method not implemented. ${value}`);
     }
     [Symbol.asyncIterator]() {
         throw new Error("Method not implemented.");
     }
     then(onfulfilled, onrejected) {
-        throw new Error("Method not implemented.");
+        throw new Error(`Method not implemented. ${onfulfilled} ${onrejected}`);
     }
     async next() {
         if (this.currentIndex < this.data.length) {
@@ -39,6 +39,7 @@ class ForYouPaginator {
         return clonedPaginator;
     }
     async throw(e) {
+        console.error(e);
         return { value: undefined, done: true };
     }
     async *values() {

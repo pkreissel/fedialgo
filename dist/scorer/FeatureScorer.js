@@ -17,11 +17,7 @@ class FeatureScorer {
         this._isReady = true;
         this.feature = await this.featureGetter(api);
     }
-    async score(api, status) {
-        if (!this._isReady) {
-            await this.getFeature(api);
-            this._isReady = true;
-        }
+    async score(_api, _status) {
         return 0;
     }
     getVerboseName() {
