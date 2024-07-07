@@ -36,6 +36,9 @@
     "typescript-eslint": "^7.15.0",
     "util": "^0.12.5"
   },
+  "overrides": {
+    "eslint": "^9.6.0"
+  },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
     "axios": "^1.7.2",
