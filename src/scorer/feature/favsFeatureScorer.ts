@@ -1,6 +1,5 @@
 import FeatureScorer from '../FeatureScorer'
-import favsFeature from '../../features/favsFeature'
-import { StatusType, accFeatureType } from '../../types'
+import { StatusType } from '../../types'
 import { mastodon } from 'masto'
 import FeatureStorage from '../../features/FeatureStore'
 
@@ -15,7 +14,7 @@ export default class favsFeatureScorer extends FeatureScorer {
         })
     }
 
-    async score(api: mastodon.rest.Client, status: StatusType) {
+    async score(_api: mastodon.rest.Client, status: StatusType) {
         return (status.account.acct in this.feature) ? this.feature[status.account.acct] : 0
     }
 }

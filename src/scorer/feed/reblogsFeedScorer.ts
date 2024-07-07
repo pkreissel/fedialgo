@@ -7,7 +7,7 @@ export default class reblogsFeedScorer extends FeedScorer {
     }
 
     feedExtractor(feed: StatusType[]) {
-        return feed.reduce((obj: any, status) => {
+        return feed.reduce((obj: Record<string, number>, status) => {
             if (status.reblog) {
                 obj[status.reblog.uri] = (obj[status.reblog.uri] || -1) + 1;
             } else {

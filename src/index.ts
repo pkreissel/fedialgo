@@ -1,5 +1,5 @@
 import { mastodon } from "masto";
-import { FeedFetcher, Scorer, StatusType, weightsType } from "./types";
+import { FeedFetcher, StatusType, weightsType } from "./types";
 import {
     favsFeatureScorer,
     interactsFeatureScorer,
@@ -17,7 +17,6 @@ import Storage from "./Storage";
 import Paginator from "./Paginator"
 import chaosFeatureScorer from "./scorer/feature/chaosFeatureScorer";
 import getRecommenderFeed from "./feeds/recommenderFeed";
-import recommendedFeatureScorer from "./scorer/feature/recommendedFeatureScorer";
 
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
@@ -28,7 +27,6 @@ export default class TheAlgorithm {
         new interactsFeatureScorer(),
         new topPostFeatureScorer(),
         new chaosFeatureScorer(),
-        new recommendedFeatureScorer()
     ];
     feedScorer = [new reblogsFeedScorer(), new diversityFeedScorer()]
     feed: StatusType[] = [];
@@ -92,8 +90,8 @@ export default class TheAlgorithm {
             .filter((item: StatusType) => item.inReplyToId === null)
             .filter((item: StatusType) => item.content.includes("RT @") === false)
             .filter((item: StatusType) => !(item?.reblog?.reblogged ?? false))
-            .filter((item: StatusType) => (!item?.reblog?.muted ?? true))
-            .filter((item: StatusType) => (!item?.muted ?? true))
+            .filter((item: StatusType) => !(item?.reblog?.muted ?? false))
+            .filter((item: StatusType) => !(item?.muted ?? false))
 
 
         // Add Time Penalty
@@ -124,7 +122,7 @@ export default class TheAlgorithm {
     private async _getValueFromScores(scores: weightsType): Promise<number> {
         const weights = await weightsStore.getWeightsMulti(Object.keys(scores));
         const weightedScores = Object.keys(scores).reduce((obj: number, cur) => {
-            obj = obj + (scores[cur] * weights[cur] ?? 0)
+            obj = obj + (scores[cur] ?? 0) * (weights[cur] ?? 0)
             return obj;
         }, 0);
         return weightedScores;
@@ -188,8 +186,8 @@ export default class TheAlgorithm {
         const mean = Object.values(statusWeights).filter((value: number) => !isNaN(value)).reduce((accumulator, currentValue) => accumulator + Math.abs(currentValue), 0) / Object.values(statusWeights).length;
         const currentWeight: weightsType = await this.getWeights()
         const currentMean = Object.values(currentWeight).filter((value: number) => !isNaN(value)).reduce((accumulator, currentValue) => accumulator + currentValue, 0) / Object.values(currentWeight).length;
-        for (let key in currentWeight) {
-            let reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
+        for (const key in currentWeight) {
+            const reweight = 1 - (Math.abs(statusWeights[key]) / mean) / (currentWeight[key] / currentMean);
             currentWeight[key] = currentWeight[key] - step * currentWeight[key] * reweight;
         }
         await this.setWeights(currentWeight);

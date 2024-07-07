@@ -7,7 +7,7 @@ export default class FeedScorer {
     private _description: string = "";
     private _defaultWeight: number = 1;
 
-    features: any = {};
+    features: Record<string, number> = {};
 
 
     constructor(verboseName: string, description?: string, defaultWeight?: number) {
@@ -17,15 +17,15 @@ export default class FeedScorer {
     }
 
     async setFeed(feed: StatusType[]) {
-        this.features = await this.feedExtractor(feed);
+        this.features = await this.feedExtractor(feed)
         this._isReady = true;
     }
 
-    feedExtractor(feed: StatusType[]): any {
+    feedExtractor(_feed: StatusType[]): Record<string, number> {
         throw new Error("Method not implemented.");
     }
 
-    async score(status: mastodon.v1.Status) {
+    async score(_status: mastodon.v1.Status): Promise<number> {
         if (!this._isReady) {
             throw new Error("FeedScorer not ready");
         }

@@ -13,6 +13,7 @@ export default async function favFeature(api: mastodon.rest.Client): Promise<acc
             }
         }
     } catch (e) {
+        console.error(e)
         return {};
     }
 

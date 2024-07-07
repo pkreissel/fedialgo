@@ -1,5 +1,5 @@
 import { mastodon } from "masto"
-import { StatusType, accFeatureType } from "../types";
+import { accFeatureType, StatusType } from "../types";
 
 interface RankParams {
     featureGetter: (api: mastodon.rest.Client) => Promise<accFeatureType>,
@@ -29,11 +29,7 @@ export default class FeatureScorer {
         this.feature = await this.featureGetter(api);
     }
 
-    async score(api: mastodon.rest.Client, status: StatusType): Promise<number> {
-        if (!this._isReady) {
-            await this.getFeature(api);
-            this._isReady = true;
-        }
+    async score(_api: mastodon.rest.Client, _status: StatusType): Promise<number> {
         return 0
     }
 
