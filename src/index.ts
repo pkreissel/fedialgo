@@ -16,11 +16,11 @@ import topPostsFeed from "./feeds/topPostsFeed";
 import Storage from "./Storage";
 import Paginator from "./Paginator"
 import chaosFeatureScorer from "./scorer/feature/chaosFeatureScorer";
-import getRecommenderFeed from "./feeds/recommenderFeed";
+//import getRecommenderFeed from "./feeds/recommenderFeed";
 
 export default class TheAlgorithm {
     user: mastodon.v1.Account;
-    fetchers = [getHomeFeed, topPostsFeed, getRecommenderFeed];
+    fetchers = [getHomeFeed, topPostsFeed];
     featureScorer = [
         new favsFeatureScorer(),
         new reblogsFeatureScorer(),
