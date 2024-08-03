@@ -51,7 +51,8 @@ class FeatureStorage extends Storage_1.default {
             return topReblogs;
         }
         else {
-            const reblogs = await (0, reblogsFeature_1.default)(api);
+            const user = await this.getIdentity();
+            const reblogs = await (0, reblogsFeature_1.default)(api, user);
             await this.set(Storage_1.Key.TOP_REBLOGS, reblogs);
             return reblogs;
         }

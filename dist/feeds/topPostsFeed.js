@@ -19,14 +19,20 @@ async function getTopPostFeed(api) {
     results = await Promise.all(servers.map(async (server) => {
         if (server === "undefined" || typeof server == "undefined" || server === "")
             return [];
-        const data = await (0, helpers_1.mastodonFetch)(server, "api/v1/timelines/public");
-        return data?.map((status) => {
+        const data = await (0, helpers_1.mastodonFetch)(server, "api/v1/trends/statuses");
+        return data?.filter(status => status?.favouritesCount > 0 || status?.reblogsCount > 0).map((status) => {
             status.topPost = true;
             return status;
         }).slice(0, 10) ?? [];
     }));
     console.log(results);
     const lastOpened = new Date((await Storage_1.default.getLastOpened() ?? 0) - 28800000);
-    return results.flat().filter((status) => new Date(status.createdAt) > lastOpened);
+    return results.flat().filter((status) => new Date(status.createdAt) > lastOpened).map((status) => {
+        const acct = status.account.acct;
+        if (acct && !acct.includes("@")) {
+            status.account.acct = `${acct}@${status.account.url.split("/")[2]}`;
+        }
+        return status;
+    });
 }
 exports.default = getTopPostFeed;
