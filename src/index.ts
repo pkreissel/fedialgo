@@ -72,7 +72,6 @@ export default class TheAlgorithm {
             // Load Scores for each status
             const featureScore = await Promise.all(featureScorer.map(scorer => scorer.score(this.api, status)));
             const feedScore = await Promise.all(feedScorer.map(scorer => scorer.score(status)));
-
             // Turn Scores into Weight Objects
             const featureScoreObj = this._getScoreObj(scoreNames, featureScore);
             const feedScoreObj = this._getScoreObj(feedScoreNames, feedScore);
@@ -97,7 +96,7 @@ export default class TheAlgorithm {
         // Add Time Penalty
         scoredFeed = scoredFeed.map((item: StatusType) => {
             const seconds = Math.floor((new Date().getTime() - new Date(item.createdAt).getTime()) / 1000);
-            const timediscount = Math.pow((1 + 0.7 * 0.2), - Math.pow((seconds / 3600), 2));
+            const timediscount = Math.pow((1 + 0.05), - Math.pow((seconds / 3600), 2));
             item.value = (item.value ?? 0) * timediscount
             return item;
         })
