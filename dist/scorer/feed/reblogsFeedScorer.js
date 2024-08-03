@@ -9,15 +9,15 @@ class reblogsFeedScorer extends FeedScorer_1.default {
         super("reblogsFeed", "More Weight to posts that are reblogged a lot", 6);
     }
     feedExtractor(feed) {
-        return feed.reduce((obj, status) => {
+        // for each uri in the feed, count the number of times it appears
+        const feedScorer = feed.reduce((obj, status) => {
+            obj[status.uri] = (obj[status.uri] || 0) + 1;
             if (status.reblog) {
-                obj[status.reblog.uri] = (obj[status.reblog.uri] || -1) + 1;
-            }
-            else {
-                obj[status.uri] = (obj[status.uri] || -1) + 1;
+                obj[status.reblog.uri] = (obj[status.reblog.uri] || 0) + 1;
             }
             return obj;
         }, {});
+        return feedScorer;
     }
     async score(status) {
         super.score(status);
@@ -25,7 +25,7 @@ class reblogsFeedScorer extends FeedScorer_1.default {
         if (status.reblog) {
             return features[status.reblog.uri] || 0;
         }
-        return 0;
+        return features[status.uri] || 0;
     }
 }
 exports.default = reblogsFeedScorer;

@@ -21,8 +21,10 @@ export default async function getTopPostFeed(api: mastodon.rest.Client): Promise
     results = await Promise.all(servers.map(async (server: string): Promise<StatusType[]> => {
         if (server === "undefined" || typeof server == "undefined" || server === "") return [];
 
-        const data = await mastodonFetch<StatusType[]>(server, "api/v1/timelines/public")
-        return data?.map((status: StatusType) => {
+        const data = await mastodonFetch<StatusType[]>(server, "api/v1/trends/statuses")
+        return data?.filter(
+            status => status?.favouritesCount > 0 || status?.reblogsCount > 0
+        ).map((status: StatusType) => {
             status.topPost = true;
             return status;
         }).slice(0, 10) ?? []
@@ -30,5 +32,11 @@ export default async function getTopPostFeed(api: mastodon.rest.Client): Promise
     console.log(results)
 
     const lastOpened = new Date((await Storage.getLastOpened() ?? 0) - 28800000)
-    return results.flat().filter((status: StatusType) => new Date(status.createdAt) > lastOpened)
+    return results.flat().filter((status: StatusType) => new Date(status.createdAt) > lastOpened).map((status: StatusType) => {
+        const acct = status.account.acct
+        if (acct && !acct.includes("@")) {
+            status.account.acct = `${acct}@${status.account.url.split("/")[2]}`
+        }
+        return status
+    })
 }

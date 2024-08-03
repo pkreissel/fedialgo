@@ -42,17 +42,17 @@ export default async function coreServerFeature(api: mastodon.rest.Client, user:
 
     console.log(serverFrequ)
 
-    // for top 30 servers
-    const top30 = Object.keys(serverFrequ).sort((a, b) => serverFrequ[b] - serverFrequ[a]).slice(0, 30)
+    // for top 20 servers
+    const top20 = Object.keys(serverFrequ).sort((a, b) => serverFrequ[b] - serverFrequ[a]).slice(0, 30)
 
-    console.log("Top 30 servers: ", top30)
-    const monthlyUsers = await Promise.all(top30.map(server => getMonthlyUsers(server)))
+    console.log("Top 30 servers: ", top20)
+    const monthlyUsers = await Promise.all(top20.map(server => getMonthlyUsers(server)))
 
     console.log("Monthly Users: ", monthlyUsers)
 
-    const overrepresentedServerFrequ = top30.reduce((acc, server, index) => {
+    const overrepresentedServerFrequ = top20.reduce((acc, server, index) => {
         const activeUsers = monthlyUsers[index];
-        if (activeUsers < 1) return acc;
+        if (activeUsers < 10) return acc;
         const ratio = serverFrequ[server] / activeUsers;
         return { ...acc, [server]: ratio }
     }, {})

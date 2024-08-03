@@ -7,14 +7,15 @@ export default class reblogsFeedScorer extends FeedScorer {
     }
 
     feedExtractor(feed: StatusType[]) {
-        return feed.reduce((obj: Record<string, number>, status) => {
+        // for each uri in the feed, count the number of times it appears
+        const feedScorer = feed.reduce((obj: Record<string, number>, status: StatusType) => {
+            obj[status.uri] = (obj[status.uri] || 0) + 1;
             if (status.reblog) {
-                obj[status.reblog.uri] = (obj[status.reblog.uri] || -1) + 1;
-            } else {
-                obj[status.uri] = (obj[status.uri] || -1) + 1;
+                obj[status.reblog.uri] = (obj[status.reblog.uri] || 0) + 1;
             }
             return obj;
         }, {});
+        return feedScorer;
     }
 
     async score(status: StatusType) {
@@ -23,6 +24,6 @@ export default class reblogsFeedScorer extends FeedScorer {
         if (status.reblog) {
             return features[status.reblog.uri] || 0;
         }
-        return 0;
+        return features[status.uri] || 0;
     }
 }
