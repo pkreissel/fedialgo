@@ -26,7 +26,8 @@ export default class FeatureStorage extends Storage {
         if (topReblogs != null && await this.getOpenings() % 10 < 9) {
             return topReblogs;
         } else {
-            const reblogs = await reblogsFeature(api);
+            const user = await this.getIdentity()
+            const reblogs = await reblogsFeature(api, user);
             await this.set(Key.TOP_REBLOGS, reblogs);
             return reblogs;
         }
