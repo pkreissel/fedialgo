@@ -3,12 +3,12 @@ import { accFeatureType } from "../types";
 
 export default async function interactFeature(api: mastodon.rest.Client): Promise<accFeatureType> {
     let results: mastodon.v1.Notification[] = [];
-    let pages = 3;
+    let pages = 5;
     try {
         for await (const page of api.v1.notifications.list({ limit: 80 })) {
             results = results.concat(page)
             pages--;
-            if (pages === 0 || results.length < 80) {
+            if (pages === 0 || page.length < 10) {
                 break;
             }
         }
