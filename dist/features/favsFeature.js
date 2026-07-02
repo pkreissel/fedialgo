@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = favFeature;
 async function favFeature(api) {
     let results = [];
     let pages = 5;
@@ -29,4 +30,3 @@ async function favFeature(api) {
     }, {});
     return favFrequ;
 }
-exports.default = favFeature;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = getReblogsFeature;
 async function getReblogsFeature(api, user) {
     let results = [];
     let pages = 5;
@@ -31,4 +32,3 @@ async function getReblogsFeature(api, user) {
     console.log(reblogFrequ);
     return reblogFrequ;
 }
-exports.default = getReblogsFeature;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = coreServerFeature;
 const helpers_1 = require("../helpers");
 async function getMonthlyUsers(server) {
     try {
@@ -53,4 +54,3 @@ async function coreServerFeature(api, user) {
     }, {});
     return overrepresentedServerFrequ;
 }
-exports.default = coreServerFeature;

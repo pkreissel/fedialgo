@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = interactFeature;
 async function interactFeature(api) {
     let results = [];
     let pages = 5;
@@ -29,4 +30,3 @@ async function interactFeature(api) {
     }, {});
     return interactFrequ;
 }
-exports.default = interactFeature;

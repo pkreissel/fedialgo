@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = getHomeFeed;
 const Storage_1 = __importDefault(require("../Storage"));
 async function getHomeFeed(api, _user) {
     let results = [];
@@ -21,4 +22,3 @@ async function getHomeFeed(api, _user) {
     }
     return results;
 }
-exports.default = getHomeFeed;
