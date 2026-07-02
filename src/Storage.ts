@@ -16,7 +16,7 @@ export enum Key {
 
 
 export default class Storage {
-    protected static async get(key: Key, groupedByUser = true, suffix = ""): Promise<StorageValue> {
+    protected static async get(key: Key, groupedByUser = true, suffix = ""): Promise<StorageValue | null> {
         const suffixKey = this.suffix(key, suffix);
         const storageKey = groupedByUser ? await this.prefix(suffixKey) : suffixKey;
         const jsonValue = await AsyncStorage.getItem(storageKey);

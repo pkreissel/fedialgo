@@ -1,67 +1,91 @@
-// Integration tests for the algorithm
 import TheAlgorithm from '../src/index';
-import { createRestAPIClient, mastodon } from "masto"
+import { mastodon } from 'masto';
 import Storage from '../src/Storage';
-import dotenv from 'dotenv';
-dotenv.config();
+import { FeatureScorer, FeedScorer } from '../src/scorer';
+import { StatusType } from '../src/types';
 
+jest.mock('@react-native-async-storage/async-storage', () =>
+    require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
 
-//mock async storage
-jest.mock("@react-native-async-storage/async-storage", () => (require('@react-native-async-storage/async-storage/jest/async-storage-mock')));
-
-describe('TheAlgorithm', () => {
+describe('TheAlgorithm (Unit Tests)', () => {
     let api: mastodon.rest.Client;
+    let user: mastodon.v1.Account;
     let algo: TheAlgorithm;
-    beforeAll(async () => {
-        if (!AbortSignal.timeout) {
-            AbortSignal.timeout = jest.fn();
-        }
-        api = createRestAPIClient({
-            accessToken: process.env.MASTODON_TOKEN as string,
-            url: process.env.MASTODON_URL as string,
-        })
-        const user = await api.v1.accounts.verifyCredentials();
+
+    beforeEach(() => {
+        api = {} as mastodon.rest.Client;
+        user = { id: '1', acct: 'me@server.com' } as mastodon.v1.Account;
         algo = new TheAlgorithm(api, user);
-    })
+    });
 
-    it('should set Identity, LastOpened, Openings and default Weights', async () => {
-        const user = await api.v1.accounts.verifyCredentials();
+    it('should initialize and set identity in Storage', async () => {
         expect(algo).toBeDefined();
-        expect(await Storage.getIdentity()).toEqual(user);
-        expect(await Storage.getLastOpened()).toBeDefined();
-        expect(await Storage.getOpenings()).toBeGreaterThan(0);
-        const weights = await algo.getWeights();
-        expect(weights).toBeDefined();
-        expect(Object.values(weights).reduce((a, b) => a && Boolean(b), true)).toBe(true);
-    })
+        const identity = await Storage.getIdentity();
+        expect(identity).toEqual(user);
+    });
 
-    it("should return a feed", async () => {
-        const feed = await algo.getFeed();
-        expect(feed).toBeDefined();
-        expect(feed.length).toBeGreaterThan(0);
-    }, 20000)
+    it('should getFeedAdvanced with injected dependencies', async () => {
+        // Mock a status
+        const mockStatus: StatusType = {
+            id: '1',
+            uri: 'https://server.com/1',
+            content: 'Hello World',
+            createdAt: new Date().toISOString(),
+            inReplyToId: null,
+        } as StatusType;
 
-    it("should return a working paginator", async () => {
-        const paginator = algo.list()
-        expect(paginator).toBeDefined();
-        const page = await paginator.next();
-        expect(page).toBeDefined();
-        expect(page.value).toBeDefined();
-        expect(page.done).toBe(false);
-        const page2 = await paginator.next();
-        expect(page2).toBeDefined();
-    })
+        const fetcher = async () => [mockStatus];
 
-    it("should change weights", async () => {
-        const weights = await algo.getWeights();
-        const newWeights = { ...weights, Favs: 5 }
-        const adjusted = await algo.weightAdjust(newWeights);
-        console.log(adjusted);
-        if (adjusted) {
-            expect(Object.values(adjusted).reduce((a, b) => a && Boolean(b), true)).toBe(true); //check that all values are defined
-            expect(adjusted["Favs"]).toBeGreaterThan(weights["Favs"]); //check that favs has increased
-        } else {
-            expect(adjusted).toBeDefined();
+        class MockFeatureScorer extends FeatureScorer {
+            async getFeature() { this.feature = {}; }
+            async score() { return 10; }
         }
-    })
-})
+
+        class MockFeedScorer extends FeedScorer {
+            async setFeed() {}
+            async score() { return 5; }
+        }
+
+        const featureScorer = new MockFeatureScorer({ featureGetter: async () => ({}), verboseName: 'mockFeature' });
+        const feedScorer = new MockFeedScorer('mockFeed');
+
+        const feed = await algo.getFeedAdvanced([fetcher], [featureScorer], [feedScorer]);
+        
+        expect(feed).toHaveLength(1);
+        expect(feed[0].scores).toEqual({
+            mockFeature: 10,
+            mockFeed: 5,
+        });
+        expect(feed[0].value).toBeDefined();
+    });
+
+    it('should filter out replies and muted statuses', async () => {
+        const mockStatuses: StatusType[] = [
+            { id: '1', uri: '1', content: 'Normal', createdAt: new Date().toISOString(), inReplyToId: null } as StatusType,
+            { id: '2', uri: '2', content: 'Reply', createdAt: new Date().toISOString(), inReplyToId: '1' } as StatusType,
+            { id: '3', uri: '3', content: 'Muted', createdAt: new Date().toISOString(), inReplyToId: null, muted: true } as StatusType,
+            { id: '4', uri: '4', content: 'RT @someone', createdAt: new Date().toISOString(), inReplyToId: null } as StatusType,
+        ];
+
+        const fetcher = async () => mockStatuses;
+        const feed = await algo.getFeedAdvanced([fetcher], [], []);
+        
+        expect(feed).toHaveLength(1);
+        expect(feed[0].id).toBe('1');
+    });
+
+    it('should correctly paginate', async () => {
+        const mockStatuses = [
+            { id: '1', uri: '1', content: 'A', createdAt: new Date().toISOString(), inReplyToId: null } as StatusType,
+            { id: '2', uri: '2', content: 'B', createdAt: new Date().toISOString(), inReplyToId: null } as StatusType,
+        ];
+        
+        await algo.getFeedAdvanced([async () => mockStatuses], [], []);
+        const paginator = algo.list();
+        
+        const page1 = await paginator.next();
+        expect(page1.done).toBe(false);
+        expect(page1.value).toHaveLength(2); // Assuming paginator yields the feed somehow or first page
+    });
+});

@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = getTopPostFeed;
 const FeatureStore_1 = __importDefault(require("../features/FeatureStore"));
 const Storage_1 = __importDefault(require("../Storage"));
 const helpers_1 = require("../helpers");
@@ -35,4 +36,3 @@ async function getTopPostFeed(api) {
         return status;
     });
 }
-exports.default = getTopPostFeed;

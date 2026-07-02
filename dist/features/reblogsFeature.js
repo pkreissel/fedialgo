@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = getReblogsFeature;
 async function getReblogsFeature(api, user) {
     let results = [];
-    let pages = 3;
+    let pages = 5;
     try {
         for await (const page of api.v1.accounts.$select(user.id).statuses.list({ limit: 80 })) {
             results = results.concat(page);
             pages--;
-            if (pages === 0 || results.length < 80) {
+            if (pages === 0 || page.length < 10) {
                 break;
             }
         }
@@ -31,4 +32,3 @@ async function getReblogsFeature(api, user) {
     console.log(reblogFrequ);
     return reblogFrequ;
 }
-exports.default = getReblogsFeature;
